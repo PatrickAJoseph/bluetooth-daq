@@ -106,4 +106,72 @@ The device provides an SPI, I2C and a UART interface which can be used by the us
 
 ![alt text](<images/bluetooth-daq-design-Software Block Diagram.drawio.png>)
 
-### 
+### RTOS
+
+The software uses FreeRTOS operating system. This is required by the TI Bluetooth Stack and also for multithreading purposes.
+
+### Soc Peripheral Drivers
+
+The following SoC peripheral drivers are required by the product.
+
+|       Driver          |           Description                            |
+|-----------------------|--------------------------------------------------|
+|       ADC             |  Required by the high speed analog input module  |
+|       SPI             |  Required for accessing the shift registers <br> and the external SRAM memory |
+|       I2C             |  Required to control DAC IC on the board         |
+|       UART            |  Required for interaction with host PC through RS-485 interface         |
+|       GPIO            |   Required by all other drivers                  |
+
+### Board Peripheral Drivers
+
+|       Driver          |                       Purpose                             |
+|-----------------------|-----------------------------------------------------------|
+|    ADS131M02          |    Controls the 24-bit Sigma-Delta ADC. Performs common operations such as setting ADC PGA gain, calibration, sample acquisition etc. |
+|    SN75HC595          |  Write data to the digital outputs through shift registers |
+|   SN75HC165           |  Read data from the SOPI shift registers |
+|   DAC101C081          |  Required for controlling the external 10-bit for setting the desired output voltage. Also, supports calibration. |
+|   23LCV1024           |   Controls the external SRAM IC. Provides read and write APIs for the external memory |
+
+### Bootloader and Firmware upgrade
+
+The device supports over the air firmware upgrade through the TI Simplelink Connect application for Mobile (https://www.bing.com/search?q=TI+Simplelink+connect&cvid=ed73fef019854968bf1f31853ef2398b&gs_lcrp=EgRlZGdlKgYIABBFGDkyBggAEEUYOTIGCAEQABhAMgYIAhAAGEAyBggDEAAYQDIGCAQQABhAMgYIBRAAGEAyBggGEAAYQNIBCDMyNjZqMGo5qAIIsAIB&FORM=ANAB01&PC=U531). Firmware upgrade over Bluetooth is only supported for mobile phones and not for laptop.
+
+### Bluetooth stack
+
+The device uses the Texas Instruments Bluetooth stack. This stack is required for Bluetooth over the air firmware upgrade and also serves as an interface between the mobile/PC and the device.
+
+### SSCP stack (serial) & SSCP stack (bluetooth)
+
+The SSCP (Simple System Control Protocol) is the transport protocol which is used by the device to interact with the host via serial interface or Bluetooth. Each interface requires a seperate SSCP responder stack instance. For more details about the SSCP protocol refer to the following Git repository: https://github.com/PatrickAJoseph/simple-system-control-protocol.
+
+### SSCP application interface
+
+This software component defines the register callback functions, register definitions related to the application for the SSCP stack.
+
+### SSCP responder stack processing task (serial & Bluetooth)
+
+This software components receives bytes from the interface (serial/Bluetooth) and sends the received byets to the SSCP stack for processing.
+
+### Device configuration manager
+
+Validates the configuration provided by the user. Also, stores and loads device settings in non-volatile storage.
+
+### High speed ADC data acquisition handler
+
+Acquires samples from the high speed acquisition ADC channels and stores conversion results in the external SRAM. Users can then read back the samples stored in the SRAM.
+
+### Digital I/O handler
+
+Used to control the digital inputs and the digital outputs of the device through the shift registers as described in the hardware section. Supports setting, clearing, toggling each DO pin and reading state of DI pins.
+
+### Analog I/O handler
+
+Controls calibration of each high voltage analog input channel, current channel, resistance measurement channel, thermistor temperature measurement channel and analog output channel. Acquires samples from the analog input channels, performs filtering and then adds calibration parameters to provide processed results. Manages the multiplexing of different analog inputs to the input channels of the sigma-delta converter through the multiplexer.
+
+### External SRAM handler
+
+The external SRAM handler is an abstraction component for the external SRAM driver. Responsible for reading and writing data application defined memory regions in the external SRAM memory via the SPI interface.
+
+### Digital interfaces handler (UART, SPI, I2C)
+
+Used to handle received communication interface commands (such as transmit, receive commands) for UART, I2C and SPI protocols. Can handle multiple byte transfer for all interfaces and stores received bytes in the external SRAM for post processing.

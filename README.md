@@ -32,10 +32,3 @@ A simple low-speed Bluetooth enabled DAQ consisting of HV/LV voltage, current me
 4. Simple Web GUI interface for control of device.
 5. Python scripting support for remote control of device from PC.
 6. LabVIEW support for the device.
-
-## Hardware block diagram
-
-![alt text](image.png)
-
-## Software block diagram
-

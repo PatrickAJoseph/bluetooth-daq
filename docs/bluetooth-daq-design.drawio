@@ -4018,8 +4018,8 @@
         <mxCell id="1517xK-29Q7V2l26DWUA-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="LM1117&lt;div&gt;12V to 5V&lt;/div&gt;" vertex="1">
           <mxGeometry height="60" width="120" x="100" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="1517xK-29Q7V2l26DWUA-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="12V to 9V buck converter&lt;div&gt;MC34063A&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="60" y="60" as="geometry" />
+        <mxCell id="1517xK-29Q7V2l26DWUA-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="12V to 8V buck converter&lt;div&gt;MC34063A&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="80" x="-20" y="60" as="geometry" />
         </mxCell>
         <mxCell id="1517xK-29Q7V2l26DWUA-6" edge="1" parent="1" source="1517xK-29Q7V2l26DWUA-2" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="1517xK-29Q7V2l26DWUA-5" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">

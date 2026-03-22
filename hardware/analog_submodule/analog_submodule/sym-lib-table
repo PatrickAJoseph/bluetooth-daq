@@ -1,0 +1,5 @@
+(sym_lib_table
+  (lib (name "TLV9004IDR")(type "KiCad")(uri "F:/Projects/bluetooth-daq/hardware/component_footprints/ul_TLV9004IDR/KiCADv6/2026-03-14_17-34-38.kicad_sym")(options "")(descr ""))
+  (lib (name "ADS131M02IPWR")(type "KiCad")(uri "F:/Projects/bluetooth-daq/hardware/component_footprints/ul_ADS131M02IPWR/KiCADv6/2026-03-15_13-07-21.kicad_sym")(options "")(descr ""))
+  (lib (name "TLV9002IDR")(type "KiCad")(uri "F:/Projects/bluetooth-daq/hardware/component_footprints/ul_TLV9002IDR/KiCADv6/2026-03-19_12-01-56.kicad_sym")(options "")(descr ""))
+)

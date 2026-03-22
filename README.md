@@ -67,7 +67,7 @@ channel, limiting the combined input signal frequency to 10kHz.
 ### Thermistor temperature measurement channels
 
 The device provides 2 thermistor temperature measurement channels.
-The reference voltage for the thermistor interface is 2.5V and reference resistance is 10k. The device comes with a calibration table for a 10K NTC. If user uses any other NTC, then, the calibration table for thermistor has to be manually entered by the user via software.
+The reference voltage for the thermistor interface is 3.3V and reference resistance is 10k. The device comes with a calibration table for a 10K NTC. If user uses any other NTC, then, the calibration table for thermistor has to be manually entered by the user via software.
 
 ### Sigma-Delta ADC
 
@@ -87,7 +87,7 @@ The device uses a 1 MBit SRAM to store samples acquired from various modules suc
 
 The device provides 16 digital inputs and digital outputs. The digital inputs are read by the MCU through a 74HC165 shift register (https://www.ti.com/lit/ds/symlink/sn74hc165.pdf) and the digital outputs are transferred through 74HC595 shift register (https://www.ti.com/lit/ds/symlink/sn74hc595.pdf).
 
-The digital inputs have a range of +/- 3.3V in order to provided reverse voltagr protection. The digital outputs have a current limit of 5mA per channel. 
+The digital inputs have a range of +/- 3.3V in order to provided reverse voltage protection. The digital outputs have a current limit of 5mA per channel. 
 
 ### Indicator LEDs
 

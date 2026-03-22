@@ -1,0 +1,101 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --board "/ti/boards/LP_EM_CC2340R5" --device "CC2340R5RKP" --part "Default" --package "RKP" --rtos "freertos" --product "simplelink_lowpower_f3_sdk@9.14.01.16"
+ * @v2CliArgs --board "/ti/boards/LP_EM_CC2340R5" --device "CC2340R5" --package "VQFN (RKP)" --variant "CC2340R52" --rtos "freertos" --product "simplelink_lowpower_f3_sdk@9.14.01.16"
+ * @versions {"tool":"1.23.2+4156"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const FreeRTOS = scripting.addModule("/freertos/FreeRTOS");
+const GPIO     = scripting.addModule("/ti/drivers/GPIO");
+const GPIO6    = GPIO.addInstance();
+const GPIO7    = GPIO.addInstance();
+const GPIO8    = GPIO.addInstance();
+const GPIO9    = GPIO.addInstance();
+const GPIO10   = GPIO.addInstance();
+const GPIO11   = GPIO.addInstance();
+const GPIO14   = GPIO.addInstance();
+const I2C      = scripting.addModule("/ti/drivers/I2C", {}, false);
+const I2C1     = I2C.addInstance();
+const Power    = scripting.addModule("/ti/drivers/Power");
+const SPI      = scripting.addModule("/ti/drivers/SPI", {}, false);
+const SPI1     = SPI.addInstance();
+const UART2    = scripting.addModule("/ti/drivers/UART2", {}, false);
+const UART21   = UART2.addInstance();
+const Settings = scripting.addModule("/ti/posix/freertos/Settings");
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+GPIO6.$name = "CONFIG_UART_SEL";
+GPIO6.mode  = "Output";
+
+GPIO7.$name              = "CONFIG_XRAM_SEL";
+GPIO7.mode               = "Output";
+GPIO7.initialOutputState = "High";
+
+GPIO8.$name              = "CONFIG_DIN_LOAD";
+GPIO8.mode               = "Output";
+GPIO8.outputStrength     = "High";
+GPIO8.initialOutputState = "High";
+GPIO8.gpioPin.$assign    = "boosterpack.10";
+
+GPIO9.$name              = "CONFIG_DOUT_LOAD";
+GPIO9.mode               = "Output";
+GPIO9.outputStrength     = "High";
+GPIO9.initialOutputState = "High";
+GPIO9.gpioPin.$assign    = "boosterpack.25";
+
+GPIO10.$name = "CONFIG_XCVR_DRV_EN";
+GPIO10.mode  = "Output";
+
+GPIO11.$name = "CONFIG_I2C_SEL";
+GPIO11.mode  = "Output";
+
+GPIO14.$name              = "CONFIG_XSPI_SEL";
+GPIO14.mode               = "Output";
+GPIO14.outputStrength     = "High";
+GPIO14.initialOutputState = "High";
+
+I2C1.$name      = "CONFIG_I2C_0";
+I2C1.maxBitRate = 400000;
+
+const CCFG              = scripting.addModule("/ti/devices/CCFG", {}, false);
+CCFG.ccfgTemplate.$name = "ti_devices_CCFG_CCFGCC23X0Template0";
+
+SPI1.$name                = "CONFIG_SPI";
+SPI1.minDmaTransferSize   = 2;
+SPI1.defaultTxBufferValue = "0XFF";
+SPI1.$hardware            = system.deviceData.board.components.LP_SPI_BUS;
+
+UART21.$name              = "CONFIG_UART";
+UART21.uart.txPin.$assign = "boosterpack.38";
+UART21.uart.rxPin.$assign = "boosterpack.40";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to MX25R8035F SPI Flash Chip Select on the CC2340R5 Development Platform\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", UART21.uart, "txPin");
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to LaunchPad LED Green on the CC2340R5 Development Platform\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", UART21.uart, "rxPin");
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+GPIO6.gpioPin.$suggestSolution            = "boosterpack.17";
+GPIO7.gpioPin.$suggestSolution            = "boosterpack.37";
+GPIO10.gpioPin.$suggestSolution           = "boosterpack.23";
+GPIO11.gpioPin.$suggestSolution           = "boosterpack.24";
+GPIO14.gpioPin.$suggestSolution           = "boosterpack.26";
+I2C1.i2c.$suggestSolution                 = "I2C0";
+I2C1.i2c.sdaPin.$suggestSolution          = "boosterpack.36";
+I2C1.i2c.sclPin.$suggestSolution          = "boosterpack.9";
+SPI1.spi.$suggestSolution                 = "SPI0";
+SPI1.spi.sclkPin.$suggestSolution         = "boosterpack.7";
+SPI1.spi.dmaRxChannel.$suggestSolution    = "DMA_CH1";
+SPI1.spi.dmaTxChannel.$suggestSolution    = "DMA_CH0";
+SPI1.spi.pociPin.$suggestSolution         = "boosterpack.14";
+SPI1.spi.picoPin.$suggestSolution         = "boosterpack.15";
+UART21.uart.$suggestSolution              = "UART0";
+UART21.uart.dmaTxChannel.$suggestSolution = "DMA_CH2";
+UART21.uart.dmaRxChannel.$suggestSolution = "DMA_CH3";

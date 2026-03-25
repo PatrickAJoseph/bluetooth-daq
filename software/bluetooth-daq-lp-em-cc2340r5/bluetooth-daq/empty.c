@@ -76,6 +76,15 @@ uint8_t xuartRxBuffer[XUART_MAX_TRANSFER_SIZE];
 size_t xuartWriteSize;
 size_t xuartReadSize;
 
+#define XI2C_MAX_TRANSFER_SIZE      32
+
+I2C_Handle i2cHandle;
+I2C_Params i2cParams;
+I2C_Transaction i2cTransaction;
+
+uint8_t i2cTxBuffer[XI2C_MAX_TRANSFER_SIZE];
+uint8_t i2cRxBuffer[XI2C_MAX_TRANSFER_SIZE];
+
 /* ======================================= External SPI API. ====================================== */
 
 int XSPI_init()
@@ -480,6 +489,129 @@ int DIO_readInput()
     return (int)spiTransferWordU16;
 }
 
+/* =========== External I2C API functions ========== */
+
+int XI2C_init()
+{
+    if( i2cHandle == NULL )
+    {
+        I2C_Params_init(&i2cParams);
+
+        i2cHandle = I2C_open(CONFIG_I2C_0, &i2cParams);
+    }
+
+    GPIO_write(CONFIG_I2C_SEL, 1);
+
+    if( i2cHandle == NULL )
+    {
+        GPIO_write(CONFIG_I2C_SEL, 1);
+        return -EIO;
+    }
+
+    return 0;
+}
+
+int XI2C_setTxCount(int count)
+{
+    i2cTransaction.writeCount = count;
+    return 0;
+}
+
+int XI2C_setRxCount(int count)
+{
+    i2cTransaction.readCount = count;
+    return 0;
+}
+
+int XI2C_setTargetAddress(int address)
+{
+    i2cTransaction.targetAddress = address;
+    return 0;
+}
+
+int XI2C_txBufferWriteByte(int index, uint8_t byte)
+{
+    i2cTxBuffer[index] = byte;
+}
+
+int XI2C_rxBufferReadByte(int index)
+{
+    return (int)i2cRxBuffer[index];
+}
+
+int XI2C_transfer()
+{
+    int ret;
+
+    //i2cTransaction.targetAddress = 0x3C;
+    i2cTransaction.readBuf = i2cRxBuffer;
+    i2cTransaction.writeBuf = i2cTxBuffer;
+    //i2cTransaction.readCount = 2;
+    //i2cTransaction.writeCount = 2;
+    
+    ret = I2C_transferTimeout(i2cHandle, &i2cTransaction, 1000000);
+
+    if( ret < 0 )
+    {
+        return -ETIME;
+    }
+
+    return 0;
+}
+
+/* ========== RS485 interface API =========== */
+
+int RS485_init()
+{
+   UART2_Params params;
+
+   if( uartHandle != NULL )
+   {
+        UART2_close(uartHandle);
+   }
+
+    UART2_Params_init(&params);
+
+    uartHandle = UART2_open(CONFIG_UART, &params);
+
+   if( uartHandle == NULL )
+   {
+    return -EIO;
+   }
+
+   return 0;
+}
+
+int RS485_write(uint8_t* buffer, size_t size)
+{
+    if( uartHandle != NULL )
+    {
+        RS485_init();
+        GPIO_write(CONFIG_UART_SEL, 0);
+    }
+
+    GPIO_write(CONFIG_XCVR_DRV_EN, 1);
+    UART2_write(uartHandle, buffer, size, NULL);
+    GPIO_write(CONFIG_XCVR_DRV_EN,0);
+}
+
+int RS485_read(uint8_t* buffer, size_t size)
+{
+    if( uartHandle != NULL )
+    {
+        RS485_init();
+        GPIO_write(CONFIG_UART_SEL, 0);
+    }
+
+    GPIO_write(CONFIG_UART_SEL, 0);
+    GPIO_write(CONFIG_XCVR_DRV_EN,0);
+
+    UART2_rxEnable(uartHandle);
+    UART2_read(uartHandle, buffer, size, NULL);
+    UART2_rxDisable(uartHandle);
+}
+
+
 /*
  *  ======== mainThread ========
  */
@@ -488,6 +620,8 @@ uint16_t input;
 int passCount;
 int failCount;
 
+uint8_t rs485Test[] = { 'T', 'e', 's', 't', '\r', '\n' };
+
 void *mainThread(void *arg0)
 {
     int ret;
@@ -495,47 +629,11 @@ void *mainThread(void *arg0)
     GPIO_init();
     I2C_init();
     SPI_init();
+    RS485_init();
 
-    ret = DIO_init();
-
-    if( ret < 0 )
-    {
-        __asm volatile("bkpt 0");
-    }
-
-    ret = XSPI_init();
-
-    XSPI_setBitRate(2000000);
-    XSPI_setFrameFormat(SPI_POL1_PHA1);
-    XSPI_setTransferSize(XSPI_MAX_TRANSFER_SIZE);
-    XSPI_setChipSelectPolarity(1);
-
-    XUART_init();
-    XUART_setBaudRate(115200);
-    //XUART_setParity(UART2_Parity_NONE);
-    //XUART_setStopBits(UART2_StopBits_1);
-    XUART_setReadSize(4);
-    XUART_setWriteSize(4);
-
-    XUART_txBufferWriteByte(0, 'a');
-    XUART_txBufferWriteByte(1, 'b');
-    XUART_txBufferWriteByte(2, 'c');
-    XUART_txBufferWriteByte(3, 'd');
-
-    XUART_setReceiveTimeout(5000000);
-    XUART_setReadSize(8);
-    
     while (1)
     {
-        //ret = XUART_transmit();
-
-        //if( ret < 0 )
-        //{
-        //    __asm volatile("bkpt 0");
-        //}
-
-        (void)XUART_receive();
-
+        RS485_read( rs485Test, 6 );
         sleep(0.1);
     }
 }

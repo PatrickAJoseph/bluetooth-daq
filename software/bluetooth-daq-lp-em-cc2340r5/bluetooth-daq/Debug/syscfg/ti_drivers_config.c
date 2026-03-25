@@ -63,7 +63,7 @@ GPIO_PinConfig gpioPinConfigs[26] = {
     GPIO_CFG_OUTPUT_INTERNAL | GPIO_CFG_OUT_STR_MED | GPIO_CFG_OUT_LOW, /* CONFIG_GPIO_SPI_PICO */
     GPIO_CFG_NO_DIR, /* DIO_14 */
     /* Owned by CONFIG_UART as RX */
-    GPIO_CFG_INPUT_INTERNAL | GPIO_CFG_IN_INT_NONE | GPIO_CFG_PULL_DOWN_INTERNAL, /* CONFIG_GPIO_UART_RX */
+    GPIO_CFG_INPUT_INTERNAL | GPIO_CFG_IN_INT_NONE | GPIO_CFG_PULL_NONE_INTERNAL, /* CONFIG_GPIO_UART_RX */
     GPIO_CFG_DO_NOT_CONFIG, /* DIO_16 */
     GPIO_CFG_DO_NOT_CONFIG, /* DIO_17 */
     /* Owned by CONFIG_SPI as SCLK */
@@ -285,9 +285,9 @@ const uint_least8_t SPI_count = CONFIG_SPI_COUNT;
 
 UART2LPF3_Object UART2LPF3_objects[CONFIG_UART2_COUNT];
 
-static unsigned char uart2RxRingBuffer0[32];
+static unsigned char uart2RxRingBuffer0[256];
 /* TX ring buffer allocated to be used for nonblocking mode */
-static unsigned char uart2TxRingBuffer0[32];
+static unsigned char uart2TxRingBuffer0[256];
 
 
 

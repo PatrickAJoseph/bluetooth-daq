@@ -36,7 +36,9 @@ empty.o: ../empty.c \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/sha2sw_config.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/hapi.h \
  syscfg/ti_drivers_config.h \
- C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/I2C.h
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/I2C.h \
+ ../types.h \
+ F:/Projects/bluetooth-daq/software/bluetooth-daq-lp-em-cc2340r5/bluetooth-daq/sscp/inc/sscp.h
 
 C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/posix/gcc/unistd.h:
 
@@ -109,3 +111,7 @@ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib
 syscfg/ti_drivers_config.h:
 
 C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/I2C.h:
+
+../types.h:
+
+F:/Projects/bluetooth-daq/software/bluetooth-daq-lp-em-cc2340r5/bluetooth-daq/sscp/inc/sscp.h:

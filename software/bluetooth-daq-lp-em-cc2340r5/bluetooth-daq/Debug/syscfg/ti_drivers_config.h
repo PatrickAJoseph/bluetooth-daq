@@ -57,6 +57,24 @@ extern const uint_least8_t CONFIG_I2C_SEL_CONST;
 extern const uint_least8_t CONFIG_XSPI_SEL_CONST;
 #define CONFIG_XSPI_SEL 2
 
+extern const uint_least8_t CONFIG_MUX0_CONST;
+#define CONFIG_MUX0 22
+
+extern const uint_least8_t CONFIG_MUX1_CONST;
+#define CONFIG_MUX1 20
+
+extern const uint_least8_t CONFIG_MUX2_CONST;
+#define CONFIG_MUX2 5
+
+extern const uint_least8_t CONFIG_DACEN_CONST;
+#define CONFIG_DACEN 7
+
+extern const uint_least8_t CONFIG_SDADCDIS_CONST;
+#define CONFIG_SDADCDIS 14
+
+extern const uint_least8_t CONFIG_ADCCS_CONST;
+#define CONFIG_ADCCS 11
+
 /* Owned by CONFIG_I2C_0 as  */
 extern const uint_least8_t CONFIG_GPIO_I2C_0_SDA_CONST;
 #define CONFIG_GPIO_I2C_0_SDA 8

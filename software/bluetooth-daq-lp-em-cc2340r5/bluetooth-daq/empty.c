@@ -52,9 +52,11 @@
 /* Driver configuration */
 #include "ti_drivers_config.h"
 
+#include "types.h"
+#include "sscp.h"
 
 SPI_Params spiParams;
-SPI_Handle spiHandle;
+SPI_Handle spiHandle = NULL;
 SPI_Transaction spiTransaction;
 uint16_t spiTransferWordU16;
 
@@ -67,7 +69,7 @@ size_t xspiTransferSize;
 unsigned int xspiChipSelectPolarity;
 
 UART2_Params xuartParams;
-UART2_Handle uartHandle;
+UART2_Handle uartHandle = NULL;
 
 #define XUART_MAX_TRANSFER_SIZE     32
 
@@ -78,41 +80,48 @@ size_t xuartReadSize;
 
 #define XI2C_MAX_TRANSFER_SIZE      32
 
-I2C_Handle i2cHandle;
+I2C_Handle i2cHandle = NULL;
 I2C_Params i2cParams;
 I2C_Transaction i2cTransaction;
 
 uint8_t i2cTxBuffer[XI2C_MAX_TRANSFER_SIZE];
 uint8_t i2cRxBuffer[XI2C_MAX_TRANSFER_SIZE];
 
-/* ======================================= External SPI API. ====================================== */
+/* ========== Extended SPI API functions ========== */
 
-int XSPI_init()
+int ESPI_init()
 {
-    if( spiHandle == NULL )
-    {
-        SPI_Params_init(&xspiParams);
+    SPI_Params params;
 
-        xspiParams.bitRate = 1000000;
-        xspiParams.dataSize = 8;
-        xspiParams.mode = SPI_CONTROLLER;
-        xspiParams.transferMode = SPI_MODE_BLOCKING;
-        xspiParams.frameFormat = SPI_POL0_PHA0;
+    SPI_Params_init(&params);
+
+     SPI_Params_init(&spiParams);
+
+    spiParams.bitRate = 1000000;
+    spiParams.dataSize = 8;
+    spiParams.mode = SPI_CONTROLLER;
+    spiParams.transferMode = SPI_MODE_BLOCKING;
+    spiParams.frameFormat = SPI_POL0_PHA0;
     
-        spiHandle = SPI_open(CONFIG_SPI, &spiParams);
-    }
+    spiHandle = SPI_open(CONFIG_SPI, &spiParams);
 
     if( spiHandle == NULL )
     {
         return -EIO;
     }
 
-    GPIO_write(CONFIG_XSPI_SEL,1);
+    return 0;
+}
 
-    xspiTransferSize = 0;
+/* ======================================= External SPI API. ====================================== */
 
-    memset( xspiTxBuffer , 0, XSPI_MAX_TRANSFER_SIZE );
-    memset( xspiRxBuffer, 0, XSPI_MAX_TRANSFER_SIZE );
+int XSPI_init()
+{
+    xspiParams.bitRate = 1000000;
+    xspiParams.dataSize = 8;
+    xspiParams.mode = SPI_CONTROLLER;
+    xspiParams.transferMode = SPI_MODE_BLOCKING;
+    xspiParams.frameFormat = SPI_POL0_PHA0;
 
     return 0;
 }
@@ -213,7 +222,9 @@ int XSPI_transfer()
         {
             GPIO_write(CONFIG_XSPI_SEL, 1);
         }
-        
+
+        SPI_close(spiHandle);
+
         return -EIO;
     }
 
@@ -226,23 +237,25 @@ int XSPI_transfer()
         GPIO_write(CONFIG_XSPI_SEL, 1);
     }
 
+    SPI_close(spiHandle);
+
+    ESPI_init();
+
     return 0;
 }
 
+
 /* ============================ External UART API functions. ===================================== */
+
+static int RS485_init();
 
 int XUART_init()
 {
-    if( uartHandle == NULL )
-    {
-        UART2_Params_init(&xuartParams);
+    UART2_Params_init(&xuartParams);
 
-        xuartParams.baudRate = 9600;
-        xuartParams.readMode = UART2_Mode_BLOCKING;
-        xuartParams.writeMode = UART2_Mode_BLOCKING; 
-
-        uartHandle = UART2_open(CONFIG_UART, &xuartParams);
-    }
+    xuartParams.baudRate = 9600;
+    xuartParams.readMode = UART2_Mode_BLOCKING;
+    xuartParams.writeMode = UART2_Mode_BLOCKING; 
 
     return 0;
 }
@@ -345,10 +358,7 @@ int XUART_transmit()
     // and the external UART (XUART) interface. So, we have to close
     // the existing connection and open up a new one.
 
-    if( uartHandle != NULL )
-    {
-        UART2_close(uartHandle);
-    }
+    UART2_close(uartHandle);
 
     uartHandle = UART2_open(CONFIG_UART, &xuartParams);
 
@@ -361,7 +371,7 @@ int XUART_transmit()
     UART2_write( uartHandle, xuartTxBuffer, xuartWriteSize, NULL);
     GPIO_write(CONFIG_UART_SEL, 0);
 
-    // TODO: We will have to restore the RS-485 interface setting back over here.
+    RS485_init();
 
     return 0;
 }
@@ -374,22 +384,19 @@ int XUART_receive()
     // and the external UART (XUART) interface. So, we have to close
     // the existing connection and open up a new one.
 
-    if( uartHandle != NULL )
-    {
-        UART2_close(uartHandle);
-    }
+    UART2_close(uartHandle);
 
     uartHandle = UART2_open(CONFIG_UART, &xuartParams);
 
     if( uartHandle == NULL )
     {
+        RS485_init();
         return -EIO;
     }
 
     UART2_rxEnable(uartHandle);
 
     GPIO_write(CONFIG_UART_SEL, 1);
-    //sleep(5)
     ret = UART2_readTimeout( uartHandle, xuartRxBuffer, xuartReadSize, (size_t*)&xuartReceiveByteCount , xuartReceiveTimeout );
     GPIO_write(CONFIG_UART_SEL, 0);
 
@@ -400,32 +407,25 @@ int XUART_receive()
     if( ret == UART2_STATUS_ETIMEOUT )
     {
         xuartReceiveTimeoutStatus = 1;
+        RS485_init();
+        
         return -ETIME;
     }
 
     xuartReceiveTimeoutStatus = 0;
+    RS485_init();
 
     return 0;
 }
 
 /* ============================ Digital input output API functions. ============================== */
 
+struct dioHandle dioHandle;
+
 int DIO_init()
 {
-    SPI_Params_init(&spiParams);
-
-    spiParams.bitRate = 1000000;
-    spiParams.dataSize = 8;
-    spiParams.mode = SPI_CONTROLLER;
-    spiParams.transferMode = SPI_MODE_BLOCKING;
-    spiParams.frameFormat = SPI_POL0_PHA0;
-    
-    spiHandle = SPI_open(CONFIG_SPI, &spiParams);
-
-    if( spiHandle == NULL )
-    {
-        return -EIO;
-    }
+    dioHandle.input = 0;
+    dioHandle.output = 0;
 
     return 0;
 }
@@ -438,6 +438,8 @@ int DIO_writeOutput(uint16_t word)
     {
         return -EBUSY;
     }
+
+    dioHandle.output = word;
 
     spiTransferWordU16 = ( ( word & 0xFF00U ) >> 8 ) | ( ( word & 0x00FFU ) << 8 );
 
@@ -486,21 +488,48 @@ int DIO_readInput()
         return -EIO;
     }
 
+    dioHandle.input = spiTransferWordU16;
+
     return (int)spiTransferWordU16;
 }
 
+/* ========== Extended I2C API functions ========== */
+
+int EI2C_init()
+{
+    if( i2cHandle )
+    {
+        I2C_close(i2cHandle);
+    }
+
+    I2C_Params_init(&i2cParams);
+
+    i2cHandle = I2C_open(CONFIG_I2C_0, &i2cParams);
+
+    GPIO_write(CONFIG_I2C_SEL, 1);
+
+    if( i2cHandle == NULL )
+    {
+        return -EIO;
+    }
+
+    return 0;
+}
+
+
+
 /* =========== External I2C API functions ========== */
+
+I2C_Params xi2cParams;
 
 int XI2C_init()
 {
-    if( i2cHandle == NULL )
-    {
-        I2C_Params_init(&i2cParams);
+    I2C_close(i2cHandle);
+    I2C_Params_init(&xi2cParams);
 
-        i2cHandle = I2C_open(CONFIG_I2C_0, &i2cParams);
-    }
+    i2cHandle = I2C_open(CONFIG_I2C_0, &xi2cParams);
 
-    GPIO_write(CONFIG_I2C_SEL, 1);
+    GPIO_write(CONFIG_I2C_SEL, 0);
 
     if( i2cHandle == NULL )
     {
@@ -539,40 +568,80 @@ int XI2C_rxBufferReadByte(int index)
     return (int)i2cRxBuffer[index];
 }
 
+int XI2C_setClockFrequency(I2C_BitRate bitRate)
+{
+    xi2cParams.bitRate = bitRate;
+}
+
+int xi2cTransferTimeout = 10000000;
+
+int XI2C_transferTimeout(int timeout)
+{
+    xi2cTransferTimeout = timeout;
+    return 0;
+}
+
 int XI2C_transfer()
 {
     int ret;
 
-    //i2cTransaction.targetAddress = 0x3C;
+    I2C_close(i2cHandle);
+    
+    GPIO_write(CONFIG_I2C_SEL, 0);
+    i2cHandle = I2C_open(CONFIG_I2C_0, &xi2cParams);
+
+    if( i2cHandle == NULL )
+    {
+        GPIO_write(CONFIG_I2C_0, 1);
+        return -EIO;
+    }
+
     i2cTransaction.readBuf = i2cRxBuffer;
     i2cTransaction.writeBuf = i2cTxBuffer;
-    //i2cTransaction.readCount = 2;
-    //i2cTransaction.writeCount = 2;
     
-    ret = I2C_transferTimeout(i2cHandle, &i2cTransaction, 1000000);
+    ret = I2C_transferTimeout(i2cHandle, &i2cTransaction, xi2cTransferTimeout);
 
     if( ret < 0 )
     {
+        EI2C_init();
+        GPIO_write(CONFIG_I2C_0, 1);
         return -ETIME;
     }
+
+    GPIO_write(CONFIG_I2C_0, 1);
+    EI2C_init();
 
     return 0;
 }
 
 /* ========== RS485 interface API =========== */
 
+void RS485_callback(UART2_Handle handle, void *buf, size_t count, void *userArg, int_fast16_t status)
+{
+
+}
+
 int RS485_init()
 {
    UART2_Params params;
 
-   if( uartHandle != NULL )
-   {
-        UART2_close(uartHandle);
-   }
+   UART2_Params_init(&params);
 
-    UART2_Params_init(&params);
+   params.readMode = UART2_Mode_CALLBACK;
+   params.writeMode = UART2_Mode_BLOCKING;
+   params.readCallback = RS485_callback;
+   params.baudRate = 115200;
+
+    if( uartHandle != NULL )
+    {
+        UART2_close(uartHandle);
+    }
 
     uartHandle = UART2_open(CONFIG_UART, &params);
+
+    UART2_rxEnable(uartHandle);
+
+    GPIO_write(CONFIG_UART_SEL, 0);
 
    if( uartHandle == NULL )
    {
@@ -584,12 +653,6 @@ int RS485_init()
 
 int RS485_write(uint8_t* buffer, size_t size)
 {
-    if( uartHandle != NULL )
-    {
-        RS485_init();
-        GPIO_write(CONFIG_UART_SEL, 0);
-    }
-
     GPIO_write(CONFIG_XCVR_DRV_EN, 1);
     UART2_write(uartHandle, buffer, size, NULL);
     GPIO_write(CONFIG_XCVR_DRV_EN,0);
@@ -597,18 +660,16 @@ int RS485_write(uint8_t* buffer, size_t size)
 
 int RS485_read(uint8_t* buffer, size_t size)
 {
-    if( uartHandle != NULL )
-    {
-        RS485_init();
-        GPIO_write(CONFIG_UART_SEL, 0);
-    }
-
-    GPIO_write(CONFIG_UART_SEL, 0);
-    GPIO_write(CONFIG_XCVR_DRV_EN,0);
-
     UART2_rxEnable(uartHandle);
     UART2_read(uartHandle, buffer, size, NULL);
     UART2_rxDisable(uartHandle);
+}
+
+uint8_t rs485RxByte;
+
+int RS485_readByte()
+{
+    return UART2_read(uartHandle, &rs485RxByte, 1, NULL );
 }
 
 
@@ -629,11 +690,18 @@ void *mainThread(void *arg0)
     GPIO_init();
     I2C_init();
     SPI_init();
+
     RS485_init();
+    EI2C_init();
+    ESPI_init();
 
     while (1)
     {
-        RS485_read( rs485Test, 6 );
+        DIO_writeOutput(0xAA);
+        input = DIO_readInput();
+        
+        RS485_readByte();
+
         sleep(0.1);
     }
 }

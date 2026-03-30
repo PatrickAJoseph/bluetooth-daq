@@ -17,7 +17,9 @@ C_SRCS += \
 ./syscfg/ti_freertos_config.c \
 ./syscfg/ti_freertos_portable_config.c \
 ../empty.c \
-../main_freertos.c 
+../main_freertos.c \
+../sscp_app.c \
+../sscp_rs485.c 
 
 GEN_FILES += \
 ./syscfg/ti_devices_config.c \
@@ -35,7 +37,9 @@ C_DEPS += \
 ./syscfg/ti_freertos_config.d \
 ./syscfg/ti_freertos_portable_config.d \
 ./empty.d \
-./main_freertos.d 
+./main_freertos.d \
+./sscp_app.d \
+./sscp_rs485.d 
 
 GEN_OPTS += \
 ./syscfg/ti_utils_build_compiler.opt 
@@ -46,7 +50,9 @@ OBJS += \
 ./syscfg/ti_freertos_config.o \
 ./syscfg/ti_freertos_portable_config.o \
 ./empty.o \
-./main_freertos.o 
+./main_freertos.o \
+./sscp_app.o \
+./sscp_rs485.o 
 
 GEN_MISC_FILES += \
 ./syscfg/ti_drivers_config.h \
@@ -64,7 +70,9 @@ OBJS__QUOTED += \
 "syscfg\ti_freertos_config.o" \
 "syscfg\ti_freertos_portable_config.o" \
 "empty.o" \
-"main_freertos.o" 
+"main_freertos.o" \
+"sscp_app.o" \
+"sscp_rs485.o" 
 
 GEN_MISC_FILES__QUOTED += \
 "syscfg\ti_drivers_config.h" \
@@ -79,7 +87,9 @@ C_DEPS__QUOTED += \
 "syscfg\ti_freertos_config.d" \
 "syscfg\ti_freertos_portable_config.d" \
 "empty.d" \
-"main_freertos.d" 
+"main_freertos.d" \
+"sscp_app.d" \
+"sscp_rs485.d" 
 
 GEN_FILES__QUOTED += \
 "syscfg\ti_devices_config.c" \
@@ -97,6 +107,8 @@ C_SRCS__QUOTED += \
 "./syscfg/ti_freertos_config.c" \
 "./syscfg/ti_freertos_portable_config.c" \
 "../empty.c" \
-"../main_freertos.c" 
+"../main_freertos.c" \
+"../sscp_app.c" \
+"../sscp_rs485.c" 
 
 

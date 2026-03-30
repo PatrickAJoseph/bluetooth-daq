@@ -4,6 +4,8 @@
 "./syscfg/ti_freertos_portable_config.o"
 "./empty.o"
 "./main_freertos.o"
+"./sscp_app.o"
+"./sscp_rs485.o"
 "./sscp/src/sscp.o"
 -Wl,-T"../lpf3_cc23xx_freertos.lds"
 -l:ti_utils_build_linker.cmd.genlibs

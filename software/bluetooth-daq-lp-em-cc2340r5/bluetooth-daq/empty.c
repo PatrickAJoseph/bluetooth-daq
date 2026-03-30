@@ -616,9 +616,11 @@ int XI2C_transfer()
 
 /* ========== RS485 interface API =========== */
 
+extern void sscpSerialCallback(void* buf, size_t count, void* arg, int_fast16_t status);
+
 void RS485_callback(UART2_Handle handle, void *buf, size_t count, void *userArg, int_fast16_t status)
 {
-
+    sscpSerialCallback(buf, count, userArg, status);
 }
 
 int RS485_init()
@@ -656,6 +658,8 @@ int RS485_write(uint8_t* buffer, size_t size)
     GPIO_write(CONFIG_XCVR_DRV_EN, 1);
     UART2_write(uartHandle, buffer, size, NULL);
     GPIO_write(CONFIG_XCVR_DRV_EN,0);
+
+    return 0;
 }
 
 int RS485_read(uint8_t* buffer, size_t size)
@@ -700,8 +704,7 @@ void *mainThread(void *arg0)
         DIO_writeOutput(0xAA);
         input = DIO_readInput();
         
-        RS485_readByte();
-
-        sleep(0.1);
+        sscpRS485Process();
+        sleep(0.01);
     }
 }

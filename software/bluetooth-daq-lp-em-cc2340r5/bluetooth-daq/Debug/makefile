@@ -16,6 +16,8 @@ ORDERED_OBJS += \
 "./syscfg/ti_freertos_portable_config.o" \
 "./empty.o" \
 "./main_freertos.o" \
+"./sscp_app.o" \
+"./sscp_rs485.o" \
 "./sscp/src/sscp.o" \
 -Wl,-T"../lpf3_cc23xx_freertos.lds" \
 $(GEN_CMDS__FLAG) \
@@ -147,8 +149,8 @@ bluetooth-daq.out: $(OBJS) $(LDS_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "syscfg\ti_devices_config.o" "syscfg\ti_drivers_config.o" "syscfg\ti_freertos_config.o" "syscfg\ti_freertos_portable_config.o" "empty.o" "main_freertos.o" "sscp\src\sscp.o" 
-	-$(RM) "syscfg\ti_devices_config.d" "syscfg\ti_drivers_config.d" "syscfg\ti_freertos_config.d" "syscfg\ti_freertos_portable_config.d" "empty.d" "main_freertos.d" "sscp\src\sscp.d" 
+	-$(RM) "syscfg\ti_devices_config.o" "syscfg\ti_drivers_config.o" "syscfg\ti_freertos_config.o" "syscfg\ti_freertos_portable_config.o" "empty.o" "main_freertos.o" "sscp_app.o" "sscp_rs485.o" "sscp\src\sscp.o" 
+	-$(RM) "syscfg\ti_devices_config.d" "syscfg\ti_drivers_config.d" "syscfg\ti_freertos_config.d" "syscfg\ti_freertos_portable_config.d" "empty.d" "main_freertos.d" "sscp_app.d" "sscp_rs485.d" "sscp\src\sscp.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo 'Finished clean'
 	-@echo ' '

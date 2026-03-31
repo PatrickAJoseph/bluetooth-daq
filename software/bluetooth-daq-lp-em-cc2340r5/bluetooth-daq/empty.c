@@ -132,9 +132,9 @@ int XSPI_setBitRate(int bitRate)
     return 0;
 }
 
-int XSPI_setFrameFormat(SPI_FrameFormat frameFormat)
+int XSPI_setFrameFormat(unsigned int frameFormat)
 {
-    xspiParams.frameFormat = frameFormat;
+    xspiParams.frameFormat = (SPI_FrameFormat)frameFormat;
     return 0;
 }
 
@@ -161,7 +161,7 @@ int XSPI_txBufferWriteByte(int index, uint8_t byte)
     return 0;
 }
 
-int XSPI_rxBufferReadByte(int index, uint8_t byte)
+int XSPI_rxBufferReadByte(int index)
 {
     if( index >= xspiTransferSize )
     {
@@ -700,10 +700,7 @@ void *mainThread(void *arg0)
     ESPI_init();
 
     while (1)
-    {
-        DIO_writeOutput(0xAA);
-        input = DIO_readInput();
-        
+    {        
         sscpRS485Process();
         sleep(0.01);
     }

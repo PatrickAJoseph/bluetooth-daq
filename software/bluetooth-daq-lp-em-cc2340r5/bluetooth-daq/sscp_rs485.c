@@ -3,12 +3,6 @@
 #include "sscp_regs.h"
 #include "sscp_app.h"
 
-/* GPIO register defines. */
-
-struct sGpioWriteReg gpioWriteReg;
-struct sGpioToggleReg gpioToggleReg;
-struct sGpioReadReg gpioReadReg;
-
 /* Control matrix definition. */
 /* NOTE: Callback functions are defined in sscp_app.h */
 
@@ -19,6 +13,10 @@ static SSCP_REGISTER_HANDLE_LIST(sscpSerialHandleList)
     SSCP_REGISTER_HANDLE( 0, gpioWriteReg, gpioWriteRegCallback ),
     SSCP_REGISTER_HANDLE( 1, gpioToggleReg, gpioToggleRegCallback ),
     SSCP_REGISTER_HANDLE( 2, gpioReadReg, gpioReadRegCallback ),
+    SSCP_REGISTER_HANDLE( 3, gpioPinctrlReg, gpioPinctrlRegCallback ),
+    SSCP_REGISTER_HANDLE( 4, spiControlReg, spiControlRegCallback ),
+    SSCP_REGISTER_HANDLE( 5, spiReadDataReg, spiReadDataRegCallback ),
+    SSCP_REGISTER_HANDLE( 6, spiWriteDataReg, spiWriteDataRegCallback ),
 };
 
 /* RS485 API defines this function. */
@@ -27,7 +25,7 @@ extern int RS485_write(uint8_t* byte, size_t size);
 
 /* SSCP instance. */
 
-static SSCP_HANDLE(sscpSerialHandle, SSCP_REGISTER_HANDLE_LIST_NAME(sscpSerialHandleList), RS485_write, SSCP_DEVICE_ID);
+SSCP_HANDLE(sscpSerialHandle, SSCP_REGISTER_HANDLE_LIST_NAME(sscpSerialHandleList), RS485_write, SSCP_DEVICE_ID);
 
 /* Function required by RS485 layer to read a byte. */
 

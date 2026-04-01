@@ -75,4 +75,52 @@ struct sSpiWriteDataReg
 
 extern struct sSpiWriteDataReg spiWriteDataReg;
 
+struct sUartPhyControlReg
+{
+    uint32_t baudRate           :   24;
+    uint32_t stopBits           :   1;
+    uint32_t parity             :   2;
+    uint32_t reserved           :   5;
+};
+
+extern struct sUartPhyControlReg uartPhyControlReg;
+
+struct sUartTransferConfigReg
+{
+    uint32_t readSize           :   8;
+    uint32_t writeSize          :   8;
+    uint32_t timeout            :   16;
+};
+
+extern struct sUartTransferConfigReg uartTransferConfigReg;
+
+struct sUartTransferControlReg
+{
+    uint32_t mode               :   2;
+    uint32_t cancel             :   1;
+    uint32_t transfer           :   1;
+    uint32_t readWriteInterval  :   16;
+    uint32_t reserved           :   12;
+};
+
+extern struct sUartTransferControlReg uartTransferControlReg;
+
+struct sUartReadDataReg
+{
+    uint32_t index              :   8;
+    uint32_t byte               :   8;
+    uint32_t reserved           :   16;
+};
+
+extern struct sUartReadDataReg uartReadDataReg;
+
+struct sUartWriteDataReg
+{
+    uint32_t index              :   8;
+    uint32_t byte               :   8;
+    uint32_t reserved           :   16;
+};
+
+extern struct sUartWriteDataReg uartWriteDataReg;
+
 #endif /* SSCP_REGS_H */

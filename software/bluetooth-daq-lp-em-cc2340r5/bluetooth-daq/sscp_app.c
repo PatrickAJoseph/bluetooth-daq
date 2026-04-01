@@ -199,3 +199,96 @@ void spiReadDataRegCallback(void* reg, int operation)
 
     }
 }
+
+/* ========== UART control ========== */
+
+struct sUartPhyControlReg uartPhyControlReg;
+struct sUartTransferConfigReg uartTransferConfigReg;
+struct sUartTransferControlReg uartTransferControlReg;
+struct sUartReadDataReg uartReadDataReg;
+struct sUartWriteDataReg uartWriteDataReg;
+
+void uartPhyControlRegCallback(void* reg, int operation)
+{
+    (void)reg;
+    (void)operation;
+
+    struct sUartPhyControlReg* regs = reg;
+
+    if( operation == SSCP_REGISTER_OPERATION_READ )
+    {
+
+    }
+    else if( operation == SSCP_REGISTER_OPERATION_WRITE )
+    {
+        
+    }
+}
+
+void uartTransferConfigRegCallback(void* reg, int operation)
+{
+    (void)reg;
+    (void)operation;
+
+    struct sUartTransferConfigReg* regs = reg;
+
+    if( operation == SSCP_REGISTER_OPERATION_READ )
+    {
+
+    }
+    else if( operation == SSCP_REGISTER_OPERATION_WRITE )
+    {
+        
+    }
+}
+
+void uartTransferControlRegCallback(void* reg, int operation)
+{
+    (void)reg;
+    (void)operation;
+
+    struct sUartTransferControlReg* regs = reg;
+
+    if( operation == SSCP_REGISTER_OPERATION_READ )
+    {
+
+    }
+    else if( operation == SSCP_REGISTER_OPERATION_WRITE )
+    {
+        
+    }
+}
+
+void uartReadDataRegCallback(void* reg, int operation)
+{
+    (void)reg;
+    (void)operation;
+
+    struct sUartReadDataReg* regs = reg;
+
+    if( operation == SSCP_REGISTER_OPERATION_READ )
+    {
+
+    }
+    else if( operation == SSCP_REGISTER_OPERATION_WRITE )
+    {
+        
+    }
+}
+
+void uartWriteDataRegCallback(void* reg, int operation)
+{
+    (void)reg;
+    (void)operation;
+
+    struct sUartWriteDataReg* regs = reg;
+
+    if( operation == SSCP_REGISTER_OPERATION_READ )
+    {
+
+    }
+    else if( operation == SSCP_REGISTER_OPERATION_WRITE )
+    {
+        
+    }
+}

@@ -10,5 +10,10 @@ extern void gpioPinctrlRegCallback(void* reg, int operation);
 extern void spiControlRegCallback(void* reg, int operation);
 extern void spiReadDataRegCallback(void* reg, int operation);
 extern void spiWriteDataRegCallback(void* reg, int operation);
+extern void uartPhyControlRegCallback(void* reg, int operation);
+extern void uartTransferConfigRegCallback(void* reg, int operation);
+extern void uartTransferControlRegCallback(void* reg, int operation);
+extern void uartReadDataRegCallback(void* reg, int operation);
+extern void uartWriteDataRegCallback(void* reg, int operation);
 
 #endif /* SSCP_APP */

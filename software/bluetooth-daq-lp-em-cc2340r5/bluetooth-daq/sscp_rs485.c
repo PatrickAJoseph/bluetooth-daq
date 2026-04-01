@@ -14,9 +14,20 @@ static SSCP_REGISTER_HANDLE_LIST(sscpSerialHandleList)
     SSCP_REGISTER_HANDLE( 1, gpioToggleReg, gpioToggleRegCallback ),
     SSCP_REGISTER_HANDLE( 2, gpioReadReg, gpioReadRegCallback ),
     SSCP_REGISTER_HANDLE( 3, gpioPinctrlReg, gpioPinctrlRegCallback ),
+
+    /* SPI control registers. */
+
     SSCP_REGISTER_HANDLE( 4, spiControlReg, spiControlRegCallback ),
     SSCP_REGISTER_HANDLE( 5, spiReadDataReg, spiReadDataRegCallback ),
     SSCP_REGISTER_HANDLE( 6, spiWriteDataReg, spiWriteDataRegCallback ),
+
+    /* UART control registers. */
+
+    SSCP_REGISTER_HANDLE( 7, uartPhyControlReg, uartPhyControlRegCallback ),
+    SSCP_REGISTER_HANDLE( 8, uartTransferConfigReg, uartTransferConfigRegCallback ),
+    SSCP_REGISTER_HANDLE( 9, uartTransferControlReg, uartTransferControlRegCallback ),
+    SSCP_REGISTER_HANDLE( 10, uartReadDataReg, uartReadDataRegCallback ),
+    SSCP_REGISTER_HANDLE( 11, uartWriteDataReg, uartWriteDataRegCallback ),
 };
 
 /* RS485 API defines this function. */

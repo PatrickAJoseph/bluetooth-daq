@@ -28,6 +28,13 @@ static SSCP_REGISTER_HANDLE_LIST(sscpSerialHandleList)
     SSCP_REGISTER_HANDLE( 9, uartTransferControlReg, uartTransferControlRegCallback ),
     SSCP_REGISTER_HANDLE( 10, uartReadDataReg, uartReadDataRegCallback ),
     SSCP_REGISTER_HANDLE( 11, uartWriteDataReg, uartWriteDataRegCallback ),
+
+    /* I2C control registers. */
+
+    SSCP_REGISTER_HANDLE( 12, i2cControlReg, i2cControlRegCallback ),
+    SSCP_REGISTER_HANDLE( 13, i2cTransferConfigReg, i2cTransferConfigRegCallback ),
+    SSCP_REGISTER_HANDLE( 14, i2cReadDataReg, i2cReadDataRegCallback ),
+    SSCP_REGISTER_HANDLE( 15, i2cWriteDataReg, i2cWriteDataRegCallback ),
 };
 
 /* RS485 API defines this function. */

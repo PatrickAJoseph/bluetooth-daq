@@ -109,7 +109,8 @@ struct sUartReadDataReg
 {
     uint32_t index              :   8;
     uint32_t byte               :   8;
-    uint32_t reserved           :   16;
+    uint32_t readCount          :   8;
+    uint32_t reserved           :   8;
 };
 
 extern struct sUartReadDataReg uartReadDataReg;
@@ -122,5 +123,43 @@ struct sUartWriteDataReg
 };
 
 extern struct sUartWriteDataReg uartWriteDataReg;
+
+struct sI2CControlReg
+{
+    uint32_t fastModeEnable   :     1;
+    uint32_t targetAddress    :     8;
+    uint32_t timeout          :     23;
+};
+
+extern struct sI2CControlReg i2cControlReg;
+
+struct sI2CTransferConfigReg
+{
+    uint32_t readSize          :    8;
+    uint32_t writeSize         :    8;
+    uint32_t status            :    3;
+    uint32_t transfer          :    1;
+    uint32_t reserved          :    12;
+};
+
+extern struct sI2CTransferConfigReg i2cTransferConfigReg;
+
+struct sI2CReadDataReg
+{
+    uint32_t index              :   8;
+    uint32_t byte               :   8;
+    uint32_t reserved           :   16;
+};
+
+extern struct sI2CReadDataReg i2cReadDataReg;
+
+struct sI2CWriteDataReg
+{
+    uint32_t index              :   8;
+    uint32_t byte               :   8;
+    uint32_t reserved           :   16;
+};
+
+extern struct sI2CWriteDataReg i2cWriteDataReg;
 
 #endif /* SSCP_REGS_H */

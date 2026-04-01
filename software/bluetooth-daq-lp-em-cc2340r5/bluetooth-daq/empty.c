@@ -265,14 +265,14 @@ void XUART_setBaudRate(int baudRate)
     xuartParams.baudRate = baudRate;
 }
 
-void XUART_setParity(UART2_Parity parity)
+void XUART_setParity(int parity)
 {
-    xuartParams.parityType = parity;
+    xuartParams.parityType = (UART2_Parity)parity;
 }
 
-void XUART_setStopBits(UART2_StopBits stopBits)
+void XUART_setStopBits(int stopBits)
 {
-    xuartParams.stopBits = stopBits;
+    xuartParams.stopBits = (UART2_StopBits)stopBits;
 }
 
 int XUART_txBufferWriteByte(int index, uint8_t byte)
@@ -334,7 +334,7 @@ int xuartReceiveTimeout;
 
 int XUART_setReceiveTimeout(int timeout)
 {
-    xuartReceiveTimeout = timeout;
+    xuartReceiveTimeout = 1000*timeout;
     return 0;
 }
 
@@ -350,6 +350,13 @@ int xuartReceiveTimeoutStatus = 0;
 int XUART_receiveTimeoutStatus()
 {
     return xuartReceiveTimeoutStatus;
+}
+
+int xuartReadWriteInterval = 0;
+
+int XUART_setReadWriteInterval(int interval)
+{
+    xuartReadWriteInterval = interval;
 }
 
 int XUART_transmit()
@@ -397,6 +404,92 @@ int XUART_receive()
     UART2_rxEnable(uartHandle);
 
     GPIO_write(CONFIG_UART_SEL, 1);
+    ret = UART2_readTimeout( uartHandle, xuartRxBuffer, xuartReadSize, (size_t*)&xuartReceiveByteCount , xuartReceiveTimeout );
+    GPIO_write(CONFIG_UART_SEL, 0);
+
+    UART2_rxDisable(uartHandle);
+
+    // TODO: We will have to restore the RS-485 interface setting back over here.
+
+    if( ret == UART2_STATUS_ETIMEOUT )
+    {
+        xuartReceiveTimeoutStatus = 1;
+        RS485_init();
+        
+        return -ETIME;
+    }
+
+    xuartReceiveTimeoutStatus = 0;
+    RS485_init();
+
+    return 0;
+}
+
+int XUART_readThenWrite()
+{
+    int_fast16_t ret;
+
+    // UART peripheral of MCU is shared between the RS-485 interface
+    // and the external UART (XUART) interface. So, we have to close
+    // the existing connection and open up a new one.
+
+    UART2_close(uartHandle);
+
+    uartHandle = UART2_open(CONFIG_UART, &xuartParams);
+
+    if( uartHandle == NULL )
+    {
+        RS485_init();
+        return -EIO;
+    }
+
+    UART2_rxEnable(uartHandle);
+
+    GPIO_write(CONFIG_UART_SEL, 1);
+    ret = UART2_readTimeout( uartHandle, xuartRxBuffer, xuartReadSize, (size_t*)&xuartReceiveByteCount , xuartReceiveTimeout );
+    UART2_write( uartHandle, xuartTxBuffer, xuartWriteSize, NULL);
+    GPIO_write(CONFIG_UART_SEL, 0);
+
+    UART2_rxDisable(uartHandle);
+
+    // TODO: We will have to restore the RS-485 interface setting back over here.
+
+    if( ret == UART2_STATUS_ETIMEOUT )
+    {
+        xuartReceiveTimeoutStatus = 1;
+        RS485_init();
+        
+        return -ETIME;
+    }
+
+    xuartReceiveTimeoutStatus = 0;
+    RS485_init();
+
+    return 0;
+}
+
+int XUART_writeThenRead()
+{
+    int_fast16_t ret;
+
+    // UART peripheral of MCU is shared between the RS-485 interface
+    // and the external UART (XUART) interface. So, we have to close
+    // the existing connection and open up a new one.
+
+    UART2_close(uartHandle);
+
+    uartHandle = UART2_open(CONFIG_UART, &xuartParams);
+
+    if( uartHandle == NULL )
+    {
+        RS485_init();
+        return -EIO;
+    }
+
+    UART2_rxEnable(uartHandle);
+
+    GPIO_write(CONFIG_UART_SEL, 1);
+    UART2_write( uartHandle, xuartTxBuffer, xuartWriteSize, NULL);
     ret = UART2_readTimeout( uartHandle, xuartRxBuffer, xuartReadSize, (size_t*)&xuartReceiveByteCount , xuartReceiveTimeout );
     GPIO_write(CONFIG_UART_SEL, 0);
 
@@ -568,14 +661,21 @@ int XI2C_rxBufferReadByte(int index)
     return (int)i2cRxBuffer[index];
 }
 
-int XI2C_setClockFrequency(I2C_BitRate bitRate)
+int XI2C_setBitRate(int bitRate)
 {
-    xi2cParams.bitRate = bitRate;
+    if( bitRate == 0 )
+    {
+        xi2cParams.bitRate = I2C_100kHz;
+    }
+    else
+    {
+        xi2cParams.bitRate = I2C_400kHz;
+    }
 }
 
 int xi2cTransferTimeout = 10000000;
 
-int XI2C_transferTimeout(int timeout)
+int XI2C_setTransferTimeout(int timeout)
 {
     xi2cTransferTimeout = timeout;
     return 0;
@@ -699,9 +799,11 @@ void *mainThread(void *arg0)
     EI2C_init();
     ESPI_init();
 
+    XUART_init();
+
     while (1)
     {        
         sscpRS485Process();
-        sleep(0.01);
+        //sleep(0.01);
     }
 }

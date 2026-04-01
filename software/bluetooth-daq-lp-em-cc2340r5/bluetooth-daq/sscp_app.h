@@ -15,5 +15,9 @@ extern void uartTransferConfigRegCallback(void* reg, int operation);
 extern void uartTransferControlRegCallback(void* reg, int operation);
 extern void uartReadDataRegCallback(void* reg, int operation);
 extern void uartWriteDataRegCallback(void* reg, int operation);
+extern void i2cControlRegCallback(void* reg, int operation);
+extern void i2cTransferConfigRegCallback(void* reg, int operation);
+extern void i2cReadDataRegCallback(void* reg, int operation);
+extern void i2cWriteDataRegCallback(void* reg, int operation);
 
 #endif /* SSCP_APP */

@@ -208,6 +208,21 @@ struct sUartTransferControlReg uartTransferControlReg;
 struct sUartReadDataReg uartReadDataReg;
 struct sUartWriteDataReg uartWriteDataReg;
 
+extern int XUART_setBaudRate(int baudRate);
+extern int XUART_setParity(int parity);
+extern int XUART_setStopBits(int stopBits);
+extern int XUART_setWriteSize(int size);
+extern int XUART_setReadSize(int size);
+extern int XUART_setReceiveTimeout(int timeout);
+extern int XUART_receiveByteCount();
+extern int XUART_transmit();
+extern int XUART_receive();
+extern int XUART_rxBufferReadByte(int index);
+extern int XUART_txBufferWriteByte(int index, uint8_t byte);
+extern int XUART_readThenWrite();
+extern int XUART_writeThenRead();
+extern int XUART_setReadWriteInterval(int interval);
+
 void uartPhyControlRegCallback(void* reg, int operation)
 {
     (void)reg;
@@ -221,7 +236,9 @@ void uartPhyControlRegCallback(void* reg, int operation)
     }
     else if( operation == SSCP_REGISTER_OPERATION_WRITE )
     {
-        
+        XUART_setBaudRate((int)regs->baudRate);
+        XUART_setParity((int)regs->parity);
+        XUART_setStopBits((int)regs->stopBits);
     }
 }
 
@@ -238,7 +255,9 @@ void uartTransferConfigRegCallback(void* reg, int operation)
     }
     else if( operation == SSCP_REGISTER_OPERATION_WRITE )
     {
-        
+        XUART_setWriteSize(regs->writeSize);
+        XUART_setReadSize(regs->readSize);
+        XUART_setReceiveTimeout(regs->timeout);
     }
 }
 
@@ -255,7 +274,32 @@ void uartTransferControlRegCallback(void* reg, int operation)
     }
     else if( operation == SSCP_REGISTER_OPERATION_WRITE )
     {
-        
+        XUART_setReadWriteInterval(regs->readWriteInterval);
+
+        if( regs->transfer )
+        {
+            /* Transmit. */
+
+            if( regs->mode == 0 )
+            {
+                XUART_transmit();
+            }
+            else if( regs->mode == 1 )  /* Receive */
+            {
+                XUART_receive();
+                uartReadDataReg.readCount = XUART_receiveByteCount();
+            }
+            else if( regs->mode == 2 )
+            {
+                XUART_readThenWrite();
+                uartReadDataReg.readCount = XUART_receiveByteCount();
+            }
+            else if( regs->mode == 3 )
+            {
+                XUART_writeThenRead();
+                uartReadDataReg.readCount = XUART_receiveByteCount();
+            }
+        }
     }
 }
 
@@ -268,7 +312,8 @@ void uartReadDataRegCallback(void* reg, int operation)
 
     if( operation == SSCP_REGISTER_OPERATION_READ )
     {
-
+        regs->readCount = XUART_receiveByteCount();
+        regs->byte = XUART_rxBufferReadByte(regs->index);
     }
     else if( operation == SSCP_REGISTER_OPERATION_WRITE )
     {
@@ -289,6 +334,108 @@ void uartWriteDataRegCallback(void* reg, int operation)
     }
     else if( operation == SSCP_REGISTER_OPERATION_WRITE )
     {
+        XUART_txBufferWriteByte(regs->index, regs->byte);
+    }
+}
+
+/* ========== I2C control ========== */
+
+extern int XI2C_setBitRate(int bitRate);
+extern int XI2C_setTxCount(int count);
+extern int XI2C_setRxCount(int count);
+extern int XI2C_setTargetAddress(int address);
+extern int XI2C_txBufferWriteByte(int index, int byte);
+extern int XI2C_rxBufferReadByte(int index);
+extern int XI2C_setTransferTimeout(int timeout);
+extern int XI2C_transfer();
+
+struct sI2CTransferConfigReg i2cTransferConfigReg;
+struct sI2CControlReg i2cControlReg;
+struct sI2CReadDataReg i2cReadDataReg;
+struct sI2CWriteDataReg i2cWriteDataReg;
+
+
+void i2cControlRegCallback(void* reg, int operation)
+{
+    (void)reg;
+    (void)operation;
+
+    struct sI2CControlReg* regs = reg;
+    
+    if( operation == SSCP_REGISTER_OPERATION_READ )
+    {
+
+    }
+    else if( operation == SSCP_REGISTER_OPERATION_WRITE )
+    {
+        XI2C_setBitRate(regs->fastModeEnable);
+        XI2C_setTargetAddress(regs->targetAddress);
+        XI2C_setTransferTimeout(regs->timeout * 1000);
+    }
+}
+
+int i2cTransferStatus = 0;
+
+void i2cTransferConfigRegCallback(void* reg, int operation)
+{
+    (void)reg;
+    (void)operation;
+
+    struct sI2CTransferConfigReg* regs = reg;
+    
+    if( operation == SSCP_REGISTER_OPERATION_READ )
+    {
+        regs->status = i2cTransferStatus;
+    }
+    else if( operation == SSCP_REGISTER_OPERATION_WRITE )
+    {
+        XI2C_setRxCount(regs->readSize);
+        XI2C_setTxCount(regs->writeSize);
         
+        if( regs->transfer )
+        {
+            if( XI2C_transfer() < 0 )
+            {
+                i2cTransferStatus = 1;
+            }
+            else
+            {
+                i2cTransferStatus = 0;
+            }
+        }
+    }
+}
+
+void i2cReadDataRegCallback(void* reg, int operation)
+{
+    (void)reg;
+    (void)operation;
+
+    struct sI2CReadDataReg* regs = reg;
+    
+    if( operation == SSCP_REGISTER_OPERATION_READ )
+    {
+        regs->byte = XI2C_rxBufferReadByte(regs->index);
+    }
+    else if( operation == SSCP_REGISTER_OPERATION_WRITE )
+    {
+       
+    }
+}
+
+void i2cWriteDataRegCallback(void* reg, int operation)
+{
+    (void)reg;
+    (void)operation;
+
+    struct sI2CWriteDataReg* regs = reg;
+    
+    if( operation == SSCP_REGISTER_OPERATION_READ )
+    {
+
+    }
+    else if( operation == SSCP_REGISTER_OPERATION_WRITE )
+    {
+        XI2C_txBufferWriteByte(regs->index, regs->byte);        
     }
 }

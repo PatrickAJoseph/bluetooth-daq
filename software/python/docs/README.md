@@ -66,7 +66,7 @@ Initializes the SSCP protocol stack for communicating with the DAQ with the requ
 
 The **core** submodule abstracts the SSCP (https://github.com/PatrickAJoseph/simple-system-control-protocol/tree/main/source/python) protocol APIs. 
 
->**bdaq.core**( *interface*: **initiator.InterfaceType**, *id*: **int**, *comm_timeout*: **int**, *serial_number*: **int**)
+>**bdaq.core**( *interface*: **initiator.InterfaceType**, *id*: **int**, *comm_timeout*: **int**, *port* : **str**, *serial_number*: **int**)
 
 Initializes the SSCP protocol stack for communicating with the DAQ with the required interface, device ID, communication interface timeout and device serial number.
 
@@ -77,6 +77,8 @@ Initializes the SSCP protocol stack for communicating with the DAQ with the requ
 *id* : The device ID of the DAQ. This number is useful for addressing a specific device among a number of devices connected to the same RS485 bus. It can take an integer value from 0 to 15. Passing any other values throws an exception.
 
 *comm_timeout* : The communication timeout period in milli-seconds. If the DAQ does not respond within the specified timeout, a timeout exception is thrown.
+
+*port* : The port identifier of the COM Port / TTY used for serial communication.
 
 *serial_number* : A 10-digit serial number which will be associated a DAQ during production. This number is important when communicating with the device via BLE.
 
@@ -107,3 +109,82 @@ Reads the list of parameters from the device and returns a list containing their
 ***Parameters***
 
 *names* : The list of parameter names to be read from the device.
+
+## DIO
+
+The **D**igital **I**nput **O**utput module is used to control the digital inputs and digital outputs of the DAQ. This module allows reading and writing states of all pins at once as well as individually.
+
+>**daq.dio.read_input**()
+
+Returns the states of the digital input pins as a 16-bit integer.
+
+>**daq.dio.read_output**()
+
+Returns the states of the digital output pins as a 16-bit integer.
+
+>**daq.dio.write_output**(*output* : **int**)
+
+Writes the 16-bit output word to the digital outputs of the DAQ.
+
+*Parameters*
+
+*output* : The 16-bit output which has to be written to the digital output pins of the DAQ. The value of *output* must range from 0 to 65535. Any other values throws a *ValueError*.
+
+>**bdaq.dio.set_output_pin_state**( *pin* : **int**, *state* : **Bool** )
+
+Sets state of digital output *pin* to the assigned *state*. The *pin* can take values from 0 to 15. Any other values throws *ValueError*.
+
+*Parameters*
+
+*pin* : The pin number of the digital output which has to be controlled. Valid value of *pin* is from 0 to 15.
+
+*state* : The state of the digital output pin.
+
+>**bdaq.dio.get_output_pin_state**( *pin* : **int** )
+
+Gets the state of the output *pin*. Returns __True__ ifoutput state high, else, returns __False__
+
+*Parameters*
+
+*pin* : The pin number in the digital output whose state has to be examined.
+
+>**bdaq.dio.toggle_output_pin_state**( *pin* : **int** )
+
+Toggles the state of the output *pin*.
+
+*Parameters*
+
+*pin* : The pin number in the digital output whose state has to be toggled.
+
+>**bdaq.dio.get_input_pin_state**( *pin* : **int** )
+
+Gets the state of the digital input *pin*. Returns __True__ if input state is high, else, returns __False__
+
+*Parameters*
+
+*pin* : The pin number in the digital input whose state has to be examined.
+
+## UART
+
+The UART submodule provides features to configure the user UART, send data and receive data from an external device. The current implementation supports a data length of only 8 bits.
+
+### Types
+
+>**dio.uart.stop_bits**
+
+Defines the number of supported stop bits. The device only supports 1 and 2 stop bits.
+
+*dio.uart.stop_bits.ONE* : Number of stop bits is 1.
+
+*dio.uart.stop_bits.TWO* : Number of stop bits is 2.
+
+>**dio.uart.parity**
+
+Defines the type of parity for a UART frame.
+
+*dio.uart.parity.NONE* : Parity is set to none.
+
+*dio.uart.parity.EVEN* : Parity is set to even.
+
+*dio.uart.parity.ODD* : Parity is set to odd.
+

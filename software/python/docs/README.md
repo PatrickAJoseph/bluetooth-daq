@@ -188,3 +188,114 @@ Defines the type of parity for a UART frame.
 
 *dio.uart.parity.ODD* : Parity is set to odd.
 
+### Methods
+
+>**bdaq.uart.configure**( *baud_rate* : **int**, *stop_bits* : **bdaq.uart.stop_bits**, *parity* : **bdaq.uart.parity** )
+
+Configures the user UART with the specified baud rate, stop bits and parity.
+
+*baud_rate* : The baud rate at which the UART bits have to be transferred. Valid baud rate is from 300 bps to 921600 bps. Values beyond this range will return error.
+
+*stop_bits* : The number of stop bits. The stop bits must be mentioned via the enum.
+
+*parity* : The parity bit settings. This argument must take one of the values from the __bdaq.uart.parity__ enum.
+
+>**bdaq.uart.set_read_timeout**( *timeout* : **int** )
+
+Sets the UART transfer timeout in milliseconds. Required for UART read operations. Timeout value can range from 0 to 60000. Values other than that will throw *ValueError*.
+
+*timeout* : The UART read timeout specified in milli-seconds.
+
+>**bdaq.uart.write**( *data* : **bytearray** )
+
+Sends the bytes in *data* over the UART interface.
+
+*data* : The data bytes to be sent over the UART TX line.
+
+>**bdaq.uart.read**( *size* : **int**, *timeout* : **int** )
+
+Reads the specified number of bytes (i.e.) *size* available in the UART RX line within the mentioned *timeout* period.
+
+*size* : The number of bytes to be read from the UART RX line.
+
+*timeout* : The timeout duration for the read operation along the UART RX line ( in __milliseconds__ )
+
+>**bdaq.uart.read_then_write**( *write_data* : **bytearray**, *read_size* : **int**, *read_timeout* : **int** )
+
+Reads the number of bytes from the UART Rx line within the mentioned timeout duration and when writes the specified bytes to the UART Tx line.
+
+*write_data* : Byte array containing the btyes to be written via the UART Tx line.
+
+*read_size* : The number of bytes to be read from the UART Rx line.
+
+*read_timeout* : The timeout duration for the read operation along the UART Rx line ( in __milliseconds__ ).
+
+>**bdaq.uart.write_then_read**( *write_data* : **bytearray**, *read_size* : **int**, *read_timeout* : **int** )
+
+Writes the mentioned bytes along the UART Tx line and reads the bytes available along the UART Rx line within the specified timeout interval.
+
+*write_data* : Byte array containing the btyes to be written via the UART Tx line.
+
+*read_size* : The number of bytes to be read from the UART Rx line.
+
+*read_timeout* : The timeout duration for the read operation along the UART Rx line ( in __milliseconds__ ).
+
+## SPI
+
+The SPI submodules provides features to configure the SPI controller and transfer bytes. The SPI module only supports MSB first transfers. LSB first transfers are not supported.
+
+### Types
+
+>**bdaq.spi.frame_format**
+
+The SPI transfer frame format.
+
+*bdaq.spi.frame_format.CPOL_0_CPHA_0* : SPI mode 0, Clock polarity is 0 and Clock phase is 0.
+
+*bdaq.spi.frame_format.CPOL_0_CPHA_1* : SPI mode 0, Clock polarity is 0 and Clock phase is 1.
+
+*bdaq.spi.frame_format.CPOL_1_CPHA_0* : SPI mode 0, Clock polarity is 1 and Clock phase is 0.
+
+*bdaq.spi.frame_format.CPOL_1_CPHA_1* : SPI mode 0, Clock polarity is 1 and Clock phase is 1.
+
+### Methods
+
+>**bdaq.spi.configure**( *bit_rate* : **int**, *frame_format* : **bdaq.spi.frame_format** )
+
+*bit_rate* : The frequency at which the data bits have to be trandferred. The *bit_rate* must a multiple of 10k and can range from 100kbps to 2 Mbps. Any other values results in *ValueError*.
+
+*frame_format* : The frame format must take one of the values from __bsaq.spi.frame_format* enum.
+
+>**bdaq.spi.transfer**( *write_data* : **bytearray** )
+
+Sends over the bytes specified in the *write_data* byte array via the MOSI line and returns the read bytes via the MISO line in __bytearray__ format.
+
+## I2C
+
+The I2C submodule supports the I2C read and write operations to an I2C peripheral and configuration of the I2C peripheral. The supported modes are standard and fast mode and 7-bit addressing mode.
+
+### Types
+
+>**bdaq.i2c.mode**
+
+Indicates whether transfer mode is standard or fast mode.
+
+*bdaq.i2c.mode.standard* : Transfers bits at 100 kHz.
+
+*bdaq.i2c.mode.fast* : Transfers bits at 400 kHz.
+
+### Methods
+
+>**bdaq.i2c.configure**( *mode* : **bdaq.i2c.mode**, *address* : **int** )
+
+Configures the I2C controller with the required transfer mode and the target peripheral address.
+
+*Parameters*
+
+*mode* : The transfer mode must take arguments only from the bdaq.i2c.mode enum.
+
+*address* : The supported target addresses are from 0 to 127. Passing any other value returns in a *ValueError*.
+
+>**bdaq.i2c.transfer**( *write_data* : **bytearray**, *read_size* : **int** )
+
+Sends over the bytes specified in the *write_data* byte array via the SDA line and reads *read_size* number of bytes from the peripheral via the SDA line.

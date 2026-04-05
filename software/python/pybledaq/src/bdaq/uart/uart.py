@@ -23,7 +23,7 @@ class UART:
                                           timeout
                                           ])
         
-    def read_data(self, index: int, data_byte: int, data_count: int) -> list[int]:
+    def read_data(self, index: int, data_count: int) -> list[int]:
         self.set_physical_control_reg(115200, 1, 0)
         self.set_transfer_config_reg(data_count, 0, 1000)
 

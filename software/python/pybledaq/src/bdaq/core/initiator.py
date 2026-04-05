@@ -499,6 +499,9 @@ class initiator:
 
         ret = self.read_register( register_name )
 
+        print("Reached here...")
+        print(f"Return value: {ret}")
+
         if( ret == False ):
             return None
 

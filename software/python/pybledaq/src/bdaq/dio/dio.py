@@ -1,8 +1,8 @@
-import core
+from ..core.core import Core
 
 class DIO:
     def __init__(self, core):
-        self.core = core
+        self.core: Core = core
 
     def read_input(self) -> int:
 
@@ -78,4 +78,4 @@ class DIO:
                                          0,
                                          0])
 
-        return bool(int(self.core.read_parameter("GPIO_PINCTRL_value")))
+        return bool(int(self.core.read_parameters(["GPIO_PINCTRL_value"])[0]))

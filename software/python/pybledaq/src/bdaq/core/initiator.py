@@ -1,6 +1,6 @@
 
-import packet
-import parser
+from .packet import packet
+from .parser import device
 import socket
 import serial
 from bleak.backends.device import BLEDevice
@@ -20,7 +20,7 @@ class InterfaceType(Enum):
 class initiator:
     
     interface: InterfaceType
-    device: parser.device
+    device: device
     file: str
     base_port: int
     iwrr_port: int
@@ -70,7 +70,7 @@ class initiator:
         self.file = file
         self.interface = interface
 
-        self.device = parser.device(self.file)
+        self.device = device(self.file)
         self.callback_table = []
 
         self.host = "127.0.0.1"
@@ -184,7 +184,7 @@ class initiator:
 
             reg = self.device.get_register(name)
 
-            p = packet.packet()
+            p = packet()
             p.encode( device_id = self.device.number, ack = False, read = True, write = False, reg = reg.number, value = 0 )
 
             print("Initiator: BLE: Posting read request for register: {_name}".format(_name = name))
@@ -202,7 +202,7 @@ class initiator:
 
             print("Initiator: BLE: Response packet information.")
 
-            response_packet = packet.packet()
+            response_packet = packet()
 
             ret = response_packet.decode(self.unstringify_packet(response))
 
@@ -227,7 +227,7 @@ class initiator:
 
         reg = self.device.get_register(name)
 
-        p = packet.packet()
+        p = packet()
         p.encode( device_id = self.device.number, ack = False, read = True, write = False, reg = reg.number, value = 0 )
 
         if( self.interface == InterfaceType.SOCKET ):
@@ -246,7 +246,7 @@ class initiator:
 
             print("Initiator: socket: Response packet information.")
 
-            response_packet = packet.packet()
+            response_packet = packet()
 
             ret = response_packet.decode(self.unstringify_packet(response))
 
@@ -279,7 +279,7 @@ class initiator:
 
             #print("Initiator: serial: Response packet information.")
 
-            response_packet = packet.packet()
+            response_packet = packet()
 
             ret = response_packet.decode(self.unstringify_packet(response))
 
@@ -312,7 +312,7 @@ class initiator:
         
         reg = self.device.get_register(name)
 
-        p = packet.packet()
+        p = packet()
         p.encode( device_id = self.device.number, ack = False, read = False, write = True, reg = reg.number, value = _value )
 
         async with BleakClient(self.bleDevice) as client:
@@ -344,7 +344,7 @@ class initiator:
 
             #print("Initiator: BLE: Response packet information.")
 
-            response_packet = packet.packet()
+            response_packet = packet()
 
             ret = response_packet.decode(self.unstringify_packet(response))
 
@@ -372,7 +372,7 @@ class initiator:
 
         reg = self.device.get_register(name)
 
-        p = packet.packet()
+        p = packet()
         p.encode( device_id = self.device.number, ack = False, read = False, write = True, reg = reg.number, value = _value )
 
         if( self.interface == InterfaceType.SOCKET ):
@@ -389,7 +389,7 @@ class initiator:
 
             #print("Initiator: socket: Response packet information.")
 
-            response_packet = packet.packet()
+            response_packet = packet()
 
             ret = response_packet.decode(self.unstringify_packet(response))
 
@@ -442,7 +442,7 @@ class initiator:
 
             #print("Initiator: serial: Response packet information.")
 
-            response_packet = packet.packet()
+            response_packet = packet()
 
             ret = response_packet.decode(self.unstringify_packet(response))
 

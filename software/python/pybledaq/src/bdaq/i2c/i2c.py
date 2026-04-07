@@ -1,4 +1,4 @@
-import core
+from ..core.core import Core
 from enum import Enum
 
 class I2C:
@@ -7,8 +7,8 @@ class I2C:
         STANDARD = 0
         FAST = 1
 
-    def __init__(self, core: core):
-        self.core :core = core
+    def __init__(self, core: Core):
+        self.core :Core = core
     
     def configure( self, mode: I2C.mode, address :int, timeout: int ):
 
@@ -17,7 +17,7 @@ class I2C:
                                          "I2C_CONTROL_timeout"],
                                          [ mode.value, address, timeout ])
     
-    def transfer( self, write_data: bytearray, read_size: int ) -> list[int]:
+    def transfer( self, write_data: bytearray, read_size: int ) -> bytearray:
 
         for write_index in range(0, len(write_data)):
 
@@ -30,7 +30,7 @@ class I2C:
                                          "I2C_TRANSFER_CONFIG_transfer"],
                                          [read_size,
                                           len(write_data),
-                                          0]
+                                          1]
                                          )
         
         read_data = []
@@ -41,4 +41,4 @@ class I2C:
 
             read_data.append(self.core.read_parameters(["I2C_READ_DATA_byte"])[0])
         
-        return read_data
+        return bytearray(read_data)

@@ -1,8 +1,11 @@
 
-import initiator
+from .initiator import initiator
+from .initiator import InterfaceType
 import yaml
+import os
 
 class Core:
+
     def __init__(self, interface, id, comm_timeout, port, serial_number):
         self.interface = interface
         self.id = id
@@ -11,7 +14,9 @@ class Core:
         self.initiator : initiator.initiator
         self.port = port
 
-        with open('bluetooth_daq.yml','r') as file:
+        read_file_path = os.path.join(os.path.dirname(__file__), "bluetooth_daq.yml")
+
+        with open(read_file_path,'r') as file:
 
             fileData = yaml.safe_load(file)
 
@@ -26,6 +31,10 @@ class Core:
             with open('bluetooth_daq_config.yml', 'w') as writeFile:
 
                 yaml.dump( fileData, writeFile )
+
+            if( interface == 0 ):
+
+                self.initiator = initiator('bluetooth_daq_config.yml', InterfaceType.SERIAL)
 
     def read_parameters(self, names):
         
@@ -63,7 +72,7 @@ class Core:
 
         index = 0
 
-        for i in len(names) - 1:
+        for i in range(0, len(names) - 1):
 
             self.initiator.set_parameter_value( names[i], values[i] )
         

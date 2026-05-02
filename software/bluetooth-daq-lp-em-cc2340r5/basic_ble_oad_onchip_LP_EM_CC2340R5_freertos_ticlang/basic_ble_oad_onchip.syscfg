@@ -1,0 +1,237 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --board "/ti/boards/LP_EM_CC2340R5" --device "CC2340R5RKP" --part "Default" --package "RKP" --rtos "freertos" --product "simplelink_lowpower_f3_sdk@9.14.01.16"
+ * @v2CliArgs --board "/ti/boards/LP_EM_CC2340R5" --device "CC2340R5" --package "VQFN (RKP)" --variant "CC2340R52" --rtos "freertos" --product "simplelink_lowpower_f3_sdk@9.14.01.16"
+ * @versions {"tool":"1.23.2+4156"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const FreeRTOS    = scripting.addModule("/freertos/FreeRTOS");
+const ble         = scripting.addModule("/ti/ble/ble");
+const CCFG        = scripting.addModule("/ti/devices/CCFG");
+const rfdesign    = scripting.addModule("/ti/devices/radioconfig/rfdesign");
+const ADC         = scripting.addModule("/ti/drivers/ADC", {}, false);
+const ADC1        = ADC.addInstance();
+const ADC2        = ADC.addInstance();
+const AESCCM      = scripting.addModule("/ti/drivers/AESCCM");
+const AESCCM1     = AESCCM.addInstance();
+const AESCTRDRBG  = scripting.addModule("/ti/drivers/AESCTRDRBG");
+const AESCTRDRBG1 = AESCTRDRBG.addInstance();
+const AESECB      = scripting.addModule("/ti/drivers/AESECB");
+const AESECB1     = AESECB.addInstance();
+const ECDH        = scripting.addModule("/ti/drivers/ECDH");
+const ECDH1       = ECDH.addInstance();
+const GPIO        = scripting.addModule("/ti/drivers/GPIO");
+const GPIO3       = GPIO.addInstance();
+const GPIO4       = GPIO.addInstance();
+const GPIO5       = GPIO.addInstance();
+const GPIO6       = GPIO.addInstance();
+const GPIO7       = GPIO.addInstance();
+const GPIO8       = GPIO.addInstance();
+const GPIO9       = GPIO.addInstance();
+const GPIO10      = GPIO.addInstance();
+const GPIO11      = GPIO.addInstance();
+const GPIO12      = GPIO.addInstance();
+const GPIO13      = GPIO.addInstance();
+const GPIO14      = GPIO.addInstance();
+const GPIO15      = GPIO.addInstance();
+const I2C         = scripting.addModule("/ti/drivers/I2C", {}, false);
+const I2C1        = I2C.addInstance();
+const LGPTimer    = scripting.addModule("/ti/drivers/LGPTimer", {}, false);
+const LGPTimer1   = LGPTimer.addInstance();
+const LGPTimer2   = LGPTimer.addInstance();
+const NVS         = scripting.addModule("/ti/drivers/NVS");
+const NVS1        = NVS.addInstance();
+const NVS2        = NVS.addInstance();
+const Power       = scripting.addModule("/ti/drivers/Power");
+const RCL         = scripting.addModule("/ti/drivers/RCL");
+const RNG         = scripting.addModule("/ti/drivers/RNG");
+const RNG1        = RNG.addInstance();
+const SPI         = scripting.addModule("/ti/drivers/SPI", {}, false);
+const SPI1        = SPI.addInstance();
+const UART2       = scripting.addModule("/ti/drivers/UART2", {}, false);
+const UART21      = UART2.addInstance();
+const Settings    = scripting.addModule("/ti/posix/freertos/Settings");
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+FreeRTOS.heapSize       = 0x00004D50;
+FreeRTOS.timerStackSize = 0x00000190;
+FreeRTOS.idleStackSize  = 0x00000130;
+
+ble.basicBLE                                                   = true;
+ble.disDevBySerUuid                                            = true;
+ble.numOfAdvSets                                               = 1;
+ble.addressMode                                                = "ADDRMODE_PUBLIC";
+ble.deviceName                                                 = "bluetooth_daq";
+ble.maxPDUSize                                                 = 251;
+ble.radioConfig.codeExportConfig.$name                         = "ti_devices_radioconfig_code_export_param0";
+ble.adcNoiseConfig.codeExportConfig.$name                      = "ti_devices_radioconfig_code_export_param1";
+ble.bleCsConfig.codeExportConfig.$name                         = "ti_devices_radioconfig_code_export_param2";
+ble.connUpdateParamsPeripheral.$name                           = "ti_ble_general_ble_conn_update_params0";
+ble.advSet1.$name                                              = "ti_ble_broadcaster_advertisement_set0";
+ble.advSet1.advParam1.$name                                    = "ti_ble_broadcaster_advertisement_params0";
+ble.advSet1.advData1.$name                                     = "ti_ble_broadcaster_advertisement_data0";
+ble.advSet1.advData1.GAP_ADTYPE_16BIT_MORE                     = true;
+ble.advSet1.advData1.numOfUUIDs16More                          = 1;
+ble.advSet1.advData1.UUID016More                               = 0xFFF0;
+ble.advSet1.scanRes1.$name                                     = "ti_ble_broadcaster_advertisement_data1";
+ble.advSet1.scanRes1.GAP_ADTYPE_PERIPHERAL_CONN_INTERVAL_RANGE = true;
+
+CCFG.ccfgTemplate.$name = "ti_devices_CCFG_CCFGCC23X0Template0";
+
+ADC1.$name         = "CONFIG_ADC_0";
+ADC1.adcSampleTime = 20;
+
+ADC2.$name                         = "CONFIG_ADC_1";
+ADC2.adcClockDivider               = "ADCLPF3_CLKDIV_32";
+ADC2.adcChannel.adc.adcPin.$assign = "boosterpack.27";
+
+AESCCM1.$name = "CONFIG_AESCCM0";
+
+AESCTRDRBG1.$name = "CONFIG_AESCTRDRBG_0";
+
+AESECB1.$name = "CONFIG_AESECB0";
+
+ECDH1.$name = "CONFIG_ECDH0";
+
+GPIO3.$name          = "CONFIG_UART_SEL";
+GPIO3.mode           = "Output";
+GPIO3.outputStrength = "High";
+
+GPIO4.$name          = "CONFIG_XRAM_SEL";
+GPIO4.mode           = "Output";
+GPIO4.outputStrength = "High";
+
+GPIO5.$name              = "CONFIG_DIN_LOAD";
+GPIO5.mode               = "Output";
+GPIO5.outputStrength     = "High";
+GPIO5.initialOutputState = "High";
+GPIO5.gpioPin.$assign    = "boosterpack.10";
+
+GPIO6.$name              = "CONFIG_DOUT_LOAD";
+GPIO6.mode               = "Output";
+GPIO6.outputStrength     = "High";
+GPIO6.initialOutputState = "High";
+GPIO6.gpioPin.$assign    = "boosterpack.25";
+
+GPIO7.$name          = "CONFIG_XCVR_DRV_EN";
+GPIO7.mode           = "Output";
+GPIO7.outputStrength = "High";
+
+GPIO8.$name          = "CONFIG_I2C_SEL";
+GPIO8.mode           = "Output";
+GPIO8.outputStrength = "High";
+
+GPIO9.$name              = "CONFIG_XSPI_SEL";
+GPIO9.mode               = "Output";
+GPIO9.outputStrength     = "High";
+GPIO9.initialOutputState = "High";
+
+GPIO10.$name           = "CONFIG_MUX0";
+GPIO10.mode            = "Output";
+GPIO10.outputStrength  = "High";
+GPIO10.gpioPin.$assign = "boosterpack.3";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to XDS110 UART on the CC2340R5 Development Platform\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", GPIO10, "gpioPin");
+
+GPIO11.$name           = "CONFIG_MUX1";
+GPIO11.mode            = "Output";
+GPIO11.outputStrength  = "High";
+GPIO11.gpioPin.$assign = "boosterpack.4";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to XDS110 UART on the CC2340R5 Development Platform\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", GPIO11, "gpioPin");
+
+GPIO12.$name           = "CONFIG_MUX2";
+GPIO12.mode            = "Output";
+GPIO12.gpioPin.$assign = "boosterpack.13";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to LaunchPad Button BTN-1 \\(Left\\) on the CC2340R5 Development Platform\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", GPIO12, "gpioPin");
+
+GPIO13.$name           = "CONFIG_DACEN";
+GPIO13.mode            = "Output";
+GPIO13.outputStrength  = "High";
+GPIO13.gpioPin.$assign = "boosterpack.12";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to LaunchPad Button BTN-2 \\(Right\\) on the CC2340R5 Development Platform\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", GPIO13, "gpioPin");
+
+GPIO14.$name              = "CONFIG_SDADCDIS";
+GPIO14.mode               = "Output";
+GPIO14.outputStrength     = "High";
+GPIO14.initialOutputState = "High";
+GPIO14.gpioPin.$assign    = "boosterpack.39";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to LaunchPad LED Red on the CC2340R5 Development Platform\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", GPIO14, "gpioPin");
+
+GPIO15.$name              = "CONFIG_ADCCS";
+GPIO15.mode               = "Output";
+GPIO15.outputStrength     = "High";
+GPIO15.initialOutputState = "High";
+GPIO15.gpioPin.$assign    = "boosterpack.18";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to LaunchPad SPI Bus Chip Select on the CC2340R5 Development Platform\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", GPIO15, "gpioPin");
+
+I2C1.$name              = "CONFIG_I2C_0";
+I2C1.maxBitRate         = 400000;
+I2C1.i2c.sdaPin.$assign = "boosterpack.36";
+
+LGPTimer1.$name             = "CONFIG_LGPTIMER_0";
+LGPTimer1.interruptPriority = "2";
+
+LGPTimer2.$name             = "CONFIG_LGPTIMER_1";
+LGPTimer2.interruptPriority = "1";
+
+NVS1.$name                    = "CONFIG_NVSINTERNAL";
+NVS1.internalFlash.$name      = "ti_drivers_nvs_NVSLPF30";
+NVS1.internalFlash.regionBase = 0x7D000;
+NVS1.internalFlash.regionSize = 0x3000;
+
+NVS2.$name                    = "CONFIG_NVSINTERNAL1";
+NVS2.internalFlash.$name      = "ti_drivers_nvs_NVSLPF31";
+NVS2.internalFlash.regionBase = 0x32000;
+NVS2.internalFlash.regionSize = 0x4A000;
+NVS2.internalFlash.regionType = "Pointer";
+
+RNG.rngReturnBehavior = "RNG_RETURN_BEHAVIOR_BLOCKING";
+
+RNG1.$name = "CONFIG_RNG_0";
+
+SPI1.$name                              = "CONFIG_SPI";
+SPI1.defaultTxBufferValue               = "0xFF";
+SPI1.$hardware                          = system.deviceData.board.components.LP_SPI_BUS;
+SPI1.minDmaTransferSize                 = 2;
+SPI1.sclkPinInstance.outputStrength     = "High";
+SPI1.pociPinInstance.pull               = "Pull Up";
+SPI1.pociPinInstance.doNotConfig        = true;
+SPI1.picoPinInstance.initialOutputState = "High";
+
+UART21.$name              = "CONFIG_UART";
+UART21.uart.txPin.$assign = "boosterpack.38";
+UART21.uart.rxPin.$assign = "boosterpack.40";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to MX25R8035F SPI Flash Chip Select on the CC2340R5 Development Platform\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", UART21.uart, "txPin");
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to LaunchPad LED Green on the CC2340R5 Development Platform\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", UART21.uart, "rxPin");
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+ADC1.adcChannel.adc.$suggestSolution        = "ADC";
+ADC1.adcChannel.adc.adcPin.$suggestSolution = "boosterpack.28";
+ADC2.adcChannel.adc.$suggestSolution        = "ADC";
+GPIO3.gpioPin.$suggestSolution              = "boosterpack.17";
+GPIO4.gpioPin.$suggestSolution              = "boosterpack.37";
+GPIO7.gpioPin.$suggestSolution              = "boosterpack.23";
+GPIO8.gpioPin.$suggestSolution              = "boosterpack.24";
+GPIO9.gpioPin.$suggestSolution              = "boosterpack.26";
+I2C1.i2c.$suggestSolution                   = "I2C0";
+I2C1.i2c.sclPin.$suggestSolution            = "boosterpack.9";
+LGPTimer1.timer.$suggestSolution            = "LGPT1";
+LGPTimer2.timer.$suggestSolution            = "LGPT0";
+SPI1.spi.$suggestSolution                   = "SPI0";
+SPI1.spi.sclkPin.$suggestSolution           = "boosterpack.7";
+SPI1.spi.dmaRxChannel.$suggestSolution      = "DMA_CH1";
+SPI1.spi.dmaTxChannel.$suggestSolution      = "DMA_CH0";
+SPI1.spi.pociPin.$suggestSolution           = "boosterpack.14";
+SPI1.spi.picoPin.$suggestSolution           = "boosterpack.15";
+UART21.uart.$suggestSolution                = "UART0";
+UART21.uart.dmaTxChannel.$suggestSolution   = "DMA_CH2";
+UART21.uart.dmaRxChannel.$suggestSolution   = "DMA_CH3";

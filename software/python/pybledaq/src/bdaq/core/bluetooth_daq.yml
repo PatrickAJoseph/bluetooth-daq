@@ -625,3 +625,108 @@ regs:
       type: "uint"
       min: 0
       max: 65535
+
+  reg_16:
+    number: 16
+    name: "DAC_CONTROL"
+    comment: "DAC control register."
+
+    parameter_0:
+      number: 0
+      name: "DAC_channel_index"
+      startbit: 0
+      bitlength: 16
+      type: "uint"
+      min: 0
+      max: 4
+
+    parameter_1:
+      number: 1
+      name: "DAC_channel_voltage"
+      startbit: 16
+      bitlength: 16
+      type: "int"
+      min: -10000
+      max: 10000
+
+  reg_17:
+    number: 17
+    name: "HSADC_CONTROL"
+    comment: "High speed ADC acquisition control register."
+
+    parameter_0:
+      number: 0
+      name: "HSADC_sample_count"
+      startbit: 0
+      bitlength: 10
+      type: "uint"
+      min: 0
+      max: 1024
+
+    parameter_1:
+      number: 1
+      name: "HSADC_dual_channel_select"
+      startbit: 10
+      bitlength: 1
+      type: "int"
+      min: 0
+      max: 1
+
+    parameter_2:
+      number: 2
+      name: "HSADC_start_acquisition"
+      startbit: 11
+      bitlength: 1
+      type: "int"
+      min: 0
+      max: 1
+
+    parameter_3:
+      number: 3
+      name: "HSADC_control_reserved"
+      startbit: 12
+      bitlength: 20
+      type: "int"
+      min: 0
+      max: 1
+
+  reg_18:
+    number: 18
+    name: "HSADC_SAMPLE"
+    comment: "High speed ADC sample storage register."
+
+    parameter_0:
+      number: 0
+      name: "HSADC_SAMPLE_channel"
+      startbit: 0
+      bitlength: 1
+      type: "uint"
+      min: 0
+      max: 1
+
+    parameter_1:
+      number: 1
+      name: "HSADC_SAMPLE_index"
+      startbit: 1
+      bitlength: 10
+      type: "uint"
+      min: 0
+      max: 1023
+
+    parameter_2:
+      number: 2
+      name: "HSADC_SAMPLE_value"
+      startbit: 11
+      bitlength: 17
+      type: "int"
+      min: -50000
+      max: 50000
+
+    parameter_3:
+      number: 3
+      name: "HSADC_SAMPLE_reserved"
+      startbit: 28
+      bitlength: 4
+      type: "uint"
+      min: 0
+      max: 1

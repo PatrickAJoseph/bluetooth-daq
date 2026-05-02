@@ -1,59 +1,51 @@
 import bdaq
 import time
+import matplotlib.pyplot as plt
+import numpy as np
+
+def simple_moving_average(data, window_size):
+    weights = np.ones(window_size) / window_size
+    sma = np.convolve(data, weights, mode='valid')
+    return sma
+
+N_SAMPLES = 128
 
 # Open a serial connection to the device.
 
-x = bdaq.bdaq(0, 0, 10000, 'COM13', 1)
+net_average = 0
 
-# Set initial LED state to true.
+x = bdaq.bdaq(0, 0, 250, 'COM13', 1)
 
-state = True
+for i in range(0,1):
 
-# Toggle digital output 0 ten times.
+    x.core.write_parameters_last(["HSADC_sample_count",
+                                "HSADC_dual_channel_select",
+                                "HSADC_start_acquisition"],
+                                [N_SAMPLES, 0, 1])
 
-for i in range(0,10):
-    x.core.write_parameters(["GPIO_write_value"],[int(state)])
-    state = False if state is True else True
-    time.sleep(0.1)
+    samples = []
 
-    # Set digital output 1 and wait for 0.25 seconds.
+    for i in range(0,N_SAMPLES):
 
-    x.core.write_parameters_last(["GPIO_PINCTRL_input_select",
-                             "GPIO_PINCTRL_pin_index",
-                             "GPIO_PINCTRL_read",
-                             "GPIO_PINCTRL_write",
-                             "GPIO_PINCTRL_toggle",
-                             "GPIO_PINCTRL_value"],
-                            [0,
-                             1,
-                             0,
-                             1,
-                             0,
-                             1])
+        x.core.write_parameters_last(["HSADC_SAMPLE_channel",
+                                    "HSADC_SAMPLE_index"],[0,i])
+        
+        current_sample = x.core.read_parameters(["HSADC_SAMPLE_value"])
 
-    time.sleep(0.25)
+        print("Sample [{_index}] = {_sample}".format( _index = i , _sample = current_sample ))
 
-    # Clear digital output 1 and wait for 0.25 seconds.
+        samples.append(current_sample[0])
 
-    x.core.write_parameters_last(["GPIO_PINCTRL_input_select",
-                             "GPIO_PINCTRL_pin_index",
-                             "GPIO_PINCTRL_read",
-                             "GPIO_PINCTRL_write",
-                             "GPIO_PINCTRL_toggle",
-                             "GPIO_PINCTRL_value"],
-                            [0,
-                             1,
-                             0,
-                             1,
-                             0,
-                             0])
+    print("Acquired samples: {_samples}".format(_samples = samples))
+    print("Average of samples: {_average}".format( _average = sum(samples[10:])/len(samples[10:])))       
 
-    time.sleep(0.25)
+    _moving_average = simple_moving_average(samples,16)
 
-# Read digital input 0 state.
+    print("Moving average: {_average}".format( _average = sum(_moving_average)/len(_moving_average) ))
 
-for i in range(0,1000):
+    net_average = net_average + sum(_moving_average)/len(_moving_average)
 
-    print( x.core.read_parameters(["GPIO_read_value"])[0] )
+    plt.plot(samples)
+    plt.show()
 
-    time.sleep(0.01)
+print(net_average/5)

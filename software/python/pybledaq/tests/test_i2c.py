@@ -3,7 +3,7 @@ import time
 
 from bdaq.i2c import I2C
 
-x = bdaq.bdaq( 0, 0, 10000, 'COM13', 1 )
+x = bdaq.bdaq( 0, 0, 1000, 'COM13', 1 )
 
 x.i2c.configure( mode = I2C.mode.STANDARD, address = int(0x3C), timeout = 10000 )
 
@@ -76,13 +76,17 @@ write_data = [int(0x00), int(0xAF)]
 x.i2c.transfer(bytearray(write_data), 0)
 
 for i in range(0,1024):
-    x.i2c.transfer(bytearray([int(0x40), int( 1 << (i%8) )]), 0)
+    x.i2c.transfer(bytearray([int(0x40), int( 0 )]), 0)
+    print("Displaying: {_index} out of 1024".format( _index = i ))
 
 for i in range(0,1024):
     x.i2c.transfer(bytearray([int(0x40), int( 1 << (7 - (i%8)) )]), 0)
+    print("Displaying: {_index} out of 1024".format( _index = i ))
 
 for i in range(0,1024):
     x.i2c.transfer(bytearray([int(0x40), int( (1 << (i%8)) - 1 )]), 0)
+    print("Displaying: {_index} out of 1024".format( _index = i ))
 
 for i in range(0,1024):
     x.i2c.transfer(bytearray([int(0x40), int( (1 << ( 7 - (i%8) ) ) - 1 )]), 0)
+    print("Displaying: {_index} out of 1024".format( _index = i ))

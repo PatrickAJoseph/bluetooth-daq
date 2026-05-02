@@ -2,7 +2,7 @@ defconfig:
   base_port: 3000
   device_number: '0'
   device_serial_number: 1
-  interface_timeout_ms: '10000'
+  interface_timeout_ms: '100'
   name: bluetooth_daq
   serial_baud_rate: 115200
   serial_port: COM13
@@ -238,6 +238,98 @@ regs:
       name: I2C_WRITE_DATA_reserved
       number: 2
       startbit: 16
+      type: uint
+  reg_16:
+    comment: DAC control register.
+    name: DAC_CONTROL
+    number: 16
+    parameter_0:
+      bitlength: 16
+      max: 4
+      min: 0
+      name: DAC_channel_index
+      number: 0
+      startbit: 0
+      type: uint
+    parameter_1:
+      bitlength: 16
+      max: 10000
+      min: -10000
+      name: DAC_channel_voltage
+      number: 1
+      startbit: 16
+      type: int
+  reg_17:
+    comment: High speed ADC acquisition control register.
+    name: HSADC_CONTROL
+    number: 17
+    parameter_0:
+      bitlength: 10
+      max: 1024
+      min: 0
+      name: HSADC_sample_count
+      number: 0
+      startbit: 0
+      type: uint
+    parameter_1:
+      bitlength: 1
+      max: 1
+      min: 0
+      name: HSADC_dual_channel_select
+      number: 1
+      startbit: 10
+      type: int
+    parameter_2:
+      bitlength: 1
+      max: 1
+      min: 0
+      name: HSADC_start_acquisition
+      number: 2
+      startbit: 11
+      type: int
+    parameter_3:
+      bitlength: 20
+      max: 1
+      min: 0
+      name: HSADC_control_reserved
+      number: 3
+      startbit: 12
+      type: int
+  reg_18:
+    comment: High speed ADC sample storage register.
+    name: HSADC_SAMPLE
+    number: 18
+    parameter_0:
+      bitlength: 1
+      max: 1
+      min: 0
+      name: HSADC_SAMPLE_channel
+      number: 0
+      startbit: 0
+      type: uint
+    parameter_1:
+      bitlength: 10
+      max: 1023
+      min: 0
+      name: HSADC_SAMPLE_index
+      number: 1
+      startbit: 1
+      type: uint
+    parameter_2:
+      bitlength: 17
+      max: 50000
+      min: -50000
+      name: HSADC_SAMPLE_value
+      number: 2
+      startbit: 11
+      type: int
+    parameter_3:
+      bitlength: 4
+      max: 1
+      min: 0
+      name: HSADC_SAMPLE_reserved
+      number: 3
+      startbit: 28
       type: uint
   reg_2:
     comment: GPIO Read Register.

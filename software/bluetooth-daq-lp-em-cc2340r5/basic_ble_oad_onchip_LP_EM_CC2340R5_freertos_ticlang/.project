@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>basic_ble_oad_onchip_LP_EM_CC2340R5_freertos_ticlang</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.ti.ccstudio.core.ccsNature</nature>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>Board.html</name>
+			<type>1</type>
+			<locationURI>COM_TI_SIMPLELINK_LOWPOWER_F3_SDK_INSTALL_DIR/source/ti/boards/LP_EM_CC2340R5/Board.html</locationURI>
+		</link>
+		<link>
+			<name>HealthToolkit/inc/ble_sys_stat.h</name>
+			<type>1</type>
+			<locationURI>COM_TI_SIMPLELINK_LOWPOWER_F3_SDK_INSTALL_DIR/source/ti/ble/stack_util/health_toolkit/ble_sys_stat.h</locationURI>
+		</link>
+		<link>
+			<name>HealthToolkit/inc/debugInfo.h</name>
+			<type>1</type>
+			<locationURI>COM_TI_SIMPLELINK_LOWPOWER_F3_SDK_INSTALL_DIR/source/ti/ble/stack_util/health_toolkit/debugInfo.h</locationURI>
+		</link>
+		<link>
+			<name>HealthToolkit/inc/debugInfo_errno.h</name>
+			<type>1</type>
+			<locationURI>COM_TI_SIMPLELINK_LOWPOWER_F3_SDK_INSTALL_DIR/source/ti/ble/stack_util/health_toolkit/debugInfo_errno.h</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>

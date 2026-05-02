@@ -36,6 +36,10 @@ class Core:
 
                 self.initiator = initiator('bluetooth_daq_config.yml', InterfaceType.SERIAL)
 
+            else:
+
+                self.initiator = initiator('bluetooth_daq_config.yml', InterfaceType.BLE)
+
     def read_parameters(self, names):
         
         regNames = []
